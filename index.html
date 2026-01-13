@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auroras 25 - Exam Dashboard</title>
+    
+    <!-- ফন্ট ইমপোর্ট (Hind Siliguri for Bangla, Poppins for English/Numbers) -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ইমেজ জেনারেটর -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- CSS Styling -->
+<style>
+.sharifulinfo-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  animation: sharifulinfo-fadeIn 0.4s ease;
+  overflow-y: auto;
+  padding: 20px 10px;
+  box-sizing: border-box;
+}
+
+.sharifulinfo-modal-content {
+  position: relative;
+  background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+  margin: auto;
+  border-radius: 25px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  width: 100%;
+  max-width: 420px;
+  animation: sharifulinfo-slideIn 0.5s ease;
+  color: white;
+  text-align: center;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.sharifulinfo-modal-inner {
+  padding: 30px 25px;
+  position: relative;
+}
+
+.sharifulinfo-modal-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #1a2a6c, #b21f1f, #fdbb2d);
+  z-index: 1;
+}
+
+.sharifulinfo-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  color: white;
+  font-size: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sharifulinfo-close:hover {
+  transform: scale(1.1) rotate(90deg);
+  background: rgba(255, 255, 255, 0.2);
+  color: #fdbb2d;
+}
+
+.sharifulinfo-header {
+  margin-bottom: 30px;
+}
+
+.sharifulinfo-image-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 25px;
+}
+
+.sharifulinfo-image {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  object-fit: cover;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.sharifulinfo-image:hover {
+  transform: scale(1.05);
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+.sharifulinfo-image-overlay {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #1a2a6c, #b21f1f, #fdbb2d);
+  z-index: 1;
+  opacity: 0.5;
+  animation: sharifulinfo-rotate 10s linear infinite;
+}
+
+.sharifulinfo-name {
+  font-size: 26px;
+  margin: 15px 0 10px;
+  font-weight: 700;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
+}
+
+.sharifulinfo-department {
+  font-size: 18px;
+  margin: 12px 0;
+  font-weight: 600;
+  color: #fdbb2d;
+  letter-spacing: 1px;
+}
+
+.sharifulinfo-session {
+  font-size: 16px;
+  margin: 10px 0;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.sharifulinfo-profession-container {
+  margin: 20px 0;
+}
+
+.sharifulinfo-profession {
+  font-size: 16px;
+  margin: 0;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  display: inline-block;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.sharifulinfo-social {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.sharifulinfo-social-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 10px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 18px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.sharifulinfo-social-link:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.sharifulinfo-social-link:nth-child(1):hover {
+  background: linear-gradient(135deg, rgba(59, 89, 152, 0.8), rgba(59, 89, 152, 0.9));
+}
+
+.sharifulinfo-social-link:nth-child(2):hover {
+  background: linear-gradient(135deg, rgba(0, 132, 255, 0.8), rgba(0, 132, 255, 0.9));
+}
+
+.sharifulinfo-social-link:nth-child(3):hover {
+  background: linear-gradient(135deg, rgba(37, 211, 102, 0.8), rgba(37, 211, 102, 0.9));
+}
+
+.sharifulinfo-social-link:nth-child(4):hover {
+  background: linear-gradient(135deg, rgba(212, 70, 56, 0.8), rgba(212, 70, 56, 0.9));
+}
+
+.sharifulinfo-social-link i {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.sharifulinfo-social-link span {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+/* Animations */
+@keyframes sharifulinfo-fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sharifulinfo-slideIn {
+  from { 
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes sharifulinfo-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive Design for Mobile */
+@media (max-width: 480px) {
+  .sharifulinfo-modal {
+    padding: 10px 5px;
+  }
+  
+  .sharifulinfo-modal-content {
+    max-width: 95%;
+    border-radius: 20px;
+  }
+  
+  .sharifulinfo-modal-inner {
+    padding: 25px 20px;
+  }
+  
+  .sharifulinfo-image {
+    width: 140px;
+    height: 140px;
+  }
+  
+  .sharifulinfo-name {
+    font-size: 22px;
+  }
+  
+  .sharifulinfo-department {
+    font-size: 16px;
+  }
+  
+  .sharifulinfo-session, 
+  .sharifulinfo-profession {
+    font-size: 14px;
+  }
+  
+  .sharifulinfo-social {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  
+  .sharifulinfo-social-link {
+    padding: 12px 8px;
+  }
+  
+  .sharifulinfo-social-link i {
+    font-size: 22px;
+  }
+  
+  .sharifulinfo-social-link span {
+    font-size: 11px;
+  }
+  
+  .sharifulinfo-close {
+    top: 10px;
+    right: 15px;
+    width: 35px;
+    height: 35px;
+    font-size: 26px;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 350px) {
+  .sharifulinfo-modal-inner {
+    padding: 20px 15px;
+  }
+  
+  .sharifulinfo-image {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .sharifulinfo-name {
+    font-size: 20px;
+  }
+  
+  .sharifulinfo-social {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+    <style>
+        :root {
+            --primary: #00897b;       /* Teal Green */
+            --primary-dark: #004d40;
+            --secondary: #00acc1;
+            --accent: #e53935;        /* Red for alerts */
+            --bg-body: #f4f6f8;
+            --bg-card: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 16px;
+        }
+
+        body.dark-mode {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            --primary: #2dd4bf;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', 'Hind Siliguri', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: 0.3s;
+            padding-top: 40px; /* For Ticker */
+            scroll-behavior: smooth;
+        }
+
+        /* --- ১. নিউজ টিকার (Marquee) --- */
+        .news-ticker {
+            position: fixed; top: 0; left: 0; width: 100%; height: 40px;
+            background: #111827; color: #fff;
+            display: flex; align-items: center; z-index: 2000;
+            border-bottom: 2px solid var(--accent);
+        }
+        .ticker-label {
+            background: var(--accent); padding: 0 20px; height: 100%;
+            display: flex; align-items: center; font-weight: 700; font-size: 0.85rem;
+            white-space: nowrap; z-index: 2; text-transform: uppercase;
+        }
+        .ticker-text {
+            display: inline-block; white-space: nowrap;
+            padding-left: 100%; animation: marquee 20s linear infinite;
+        }
+        .ticker-text span { margin-right: 50px; font-size: 0.9rem; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        /* --- ২. হেডার --- */
+        header {
+            background: var(--bg-card);
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            position: sticky; top: 40px; z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .header-inner {
+            max-width: 1200px; margin: 0 auto; padding: 0 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .brand { display: flex; align-items: center; gap: 15px; }
+        .brand-logo { 
+            width: 60px; height: 60px; object-fit: contain; 
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+        .brand-info h1 { font-size: 1.1rem; font-weight: 700; color: var(--primary); line-height: 1.2; margin-bottom: 2px; }
+        .brand-info p { font-size: 0.85rem; font-weight: 500; color: var(--text-main); }
+        .brand-info span { font-size: 0.75rem; color: var(--text-muted); background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; }
+
+        .header-actions button {
+            background: transparent; border: 1px solid var(--border-color);
+            width: 40px; height: 40px; border-radius: 50%;
+            color: var(--text-main); font-size: 1.1rem; cursor: pointer;
+            transition: 0.2s; margin-left: 8px;
+        }
+        .header-actions button:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* --- ৩. সাইড মেনু --- */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 2900; display: none;
+            backdrop-filter: blur(3px);
+        }
+        .overlay.active { display: block; }
+
+        .sidebar {
+            position: fixed; top: 0; right: -280px; width: 280px; height: 100vh;
+            background: var(--bg-card); z-index: 3000;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.2);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; flex-direction: column;
+        }
+        .sidebar.active { right: 0; }
+        
+        .sidebar-header {
+            padding: 20px; background: var(--primary); color: white;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .menu-list { padding: 10px; overflow-y: auto; }
+        .menu-list a {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 15px; color: var(--text-main); text-decoration: none;
+            border-radius: 8px; margin-bottom: 5px; font-weight: 500;
+            transition: 0.2s; border-left: 4px solid transparent;
+        }
+        .menu-list a:hover { background: rgba(0,137,123,0.08); border-left-color: var(--primary); color: var(--primary); }
+
+        /* --- ৪. মেইন কন্টেইনার --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 25px 20px; }
+
+        /* স্ট্যাটস */
+        .stats-container {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px;
+        }
+        .stat-card {
+            background: var(--bg-card); padding: 15px; border-radius: var(--radius);
+            box-shadow: var(--shadow); text-align: center; border-bottom: 4px solid transparent;
+        }
+        .stat-val { font-size: 1.8rem; font-weight: 700; display: block; line-height: 1.2; }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* সার্চ বার (Restored) */
+        .search-area { position: relative; margin-bottom: 25px; }
+        .search-input {
+            width: 100%; padding: 15px 50px 15px 20px; border-radius: 50px;
+            border: 2px solid transparent; background: var(--bg-card);
+            box-shadow: var(--shadow); font-size: 1rem; color: var(--text-main);
+            outline: none; transition: 0.3s;
+        }
+        .search-input:focus { border-color: var(--primary); }
+        .search-btn {
+            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+            background: var(--primary); color: white; border: none;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+        }
+
+        /* ডাউনলোড বাটন */
+        .dl-routine-btn {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white; border: none; padding: 12px 30px; border-radius: 50px;
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.3);
+            display: flex; align-items: center; gap: 10px; margin: 0 auto 35px;
+            transition: transform 0.2s;
+        }
+        .dl-routine-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(42, 82, 152, 0.4); }
+
+        /* --- ৫. এক্সাম কার্ড ডিজাইন (Updated) --- */
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 40px 0 20px;
+            padding-left: 15px; border-left: 5px solid var(--primary);
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .exams-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 25px;
+        }
+        
+        .exam-card {
+            background: var(--bg-card); border-radius: var(--radius);
+            box-shadow: var(--shadow); overflow: hidden;
+            display: flex; flex-direction: column;
+            border: 1px solid var(--border-color);
+            transition: 0.3s; position: relative;
+        }
+        .exam-card:hover { transform: translateY(-7px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+
+        /* কার্ড হেডার */
+        .ec-header {
+            padding: 15px 20px; background: rgba(0,137,123,0.05);
+            border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        /* বারকোড ফন্ট */
+        .code-barcode {
+            font-family: 'Libre Barcode 39 Text', cursive;
+            font-size: 1.8rem; color: var(--text-main); line-height: 1; transform: scaleY(1.5);
+        }
+        .type-badge {
+            font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase;
+        }
+        .bg-major { background: #e8f5e9; color: #2e7d32; }
+        .bg-non { background: #e3f2fd; color: #1565c0; }
+
+        /* কার্ড বডি */
+        .ec-body { padding: 20px; flex-grow: 1; }
+        .ec-subject { font-size: 1.25rem; font-weight: 700; margin-bottom: 15px; line-height: 1.3; color: var(--text-main); }
+        
+        .ec-meta {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;
+        }
+        .meta-item {
+            font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;
+        }
+        .meta-item i { color: var(--primary); }
+
+        /* কাউন্টডাউন বক্স */
+        .ec-timer {
+            background: var(--bg-body); padding: 10px; border-radius: 8px;
+            text-align: center; margin-bottom: 15px; border-left: 4px solid #ccc;
+        }
+        .timer-val { font-weight: 700; font-size: 0.95rem; }
+
+        /* সিলেবাস & টপিক (Restored) */
+        .syllabus-toggle {
+            width: 100%; padding: 10px; border: 1px dashed var(--primary);
+            color: var(--primary); background: none; border-radius: 8px;
+            font-weight: 600; cursor: pointer; transition: 0.2s;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .syllabus-toggle:hover { background: rgba(0,137,123,0.05); }
+
+        .syllabus-content {
+            display: none; margin-top: 15px; padding: 15px; background: var(--bg-body); border-radius: 8px;
+        }
+        .syllabus-content.show { display: block; animation: fadeIn 0.3s; }
+        
+        .chapter-box { margin-bottom: 10px; }
+        .chapter-title { font-weight: 700; font-size: 0.9rem; color: var(--text-main); margin-bottom: 4px; }
+        .topic-list { list-style: none; padding-left: 10px; border-left: 2px solid var(--border-color); }
+        .topic-list li { font-size: 0.85rem; color: var(--text-muted); position: relative; padding-left: 10px; margin-bottom: 2px; }
+        .topic-list li::before { content: "-"; position: absolute; left: 0; color: var(--accent); }
+
+        /* --- ৬. নোটিশ & গ্যালারি --- */
+        .notice-grid { display: grid; gap: 15px; }
+        .notice-link { text-decoration: none; display: block; }
+        
+        .notice-card {
+            background: var(--bg-card); padding: 20px; border-radius: var(--radius);
+            box-shadow: var(--shadow); border-left: 5px solid var(--accent);
+            display: flex; justify-content: space-between; align-items: center;
+            transition: 0.2s;
+        }
+        .notice-card:hover { transform: translateX(5px); background: #fff8f8; }
+        .n-title { font-weight: 700; font-size: 1.05rem; color: var(--text-main); display: block; }
+        .n-date { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; display: block; }
+        .n-icon { font-size: 1.2rem; color: var(--primary); }
+
+        /* গ্যালারি (Grid + Hover) */
+        .gallery-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px;
+        }
+        .gallery-item {
+            position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden;
+            cursor: pointer; box-shadow: var(--shadow); background: #eee;
+        }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
+        .gallery-item:hover img { transform: scale(1.1); }
+        .g-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white; padding: 15px 10px 10px; text-align: center;
+            transform: translateY(100%); transition: 0.3s;
+        }
+        .gallery-item:hover .g-overlay { transform: translateY(0); }
+        .g-btn {
+            background: white; color: black; border: none; padding: 5px 12px;
+            border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-top: 5px; display: inline-block;
+        }
+
+        /* --- ৭. এক্সট্রা --- */
+        /* স্ক্রল টু টপ */
+        #scrollTopBtn {
+            position: fixed; bottom: 30px; right: 30px;
+            width: 50px; height: 50px; background: var(--accent); color: white;
+            border: none; border-radius: 50%; box-shadow: 0 5px 15px rgba(229, 57, 53, 0.4);
+            cursor: pointer; display: none; justify-content: center; align-items: center; font-size: 1.2rem;
+            z-index: 900; transition: 0.3s;
+        }
+        #scrollTopBtn:hover { transform: translateY(-5px); }
+
+        /* ফুটার */
+        footer {
+            background: #0f172a; color: white; padding: 40px 20px;
+            text-align: center; margin-top: 60px;
+        }
+        .footer-logo { width: 50px; margin-bottom: 10px; opacity: 0.8; }
+        .dev-info { margin-top: 20px; padding-top: 20px; border-top: 1px solid #334155; color: #94a3b8; font-size: 0.9rem; }
+        .dev-info a { color: var(--secondary); text-decoration: none; }
+
+        /* মোডাল */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 5000; display: none;
+            justify-content: center; align-items: center; flex-direction: column;
+        }
+        .modal.active { display: flex; animation: fadeIn 0.3s; }
+        .modal img { max-width: 90%; max-height: 80vh; border-radius: 8px; box-shadow: 0 0 20px rgba(255,255,255,0.1); }
+        .modal-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 2.5rem; cursor: pointer; }
+        .modal-download {
+            margin-top: 20px; background: white; color: black; padding: 10px 25px;
+            border-radius: 50px; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 8px;
+        }
+
+        /* হিডেন রুটিন টেবিল (ইমেজ জেনারেশনের জন্য) */
+        #hidden-routine-table {
+            position: fixed; top: -10000px; left: -10000px;
+            width: 800px; background: white; color: black; padding: 40px;
+            font-family: 'Poppins', sans-serif;
+        }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #000; padding: 10px; text-align: left; font-size: 14px; }
+        th { background: #f0f0f0; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* মোবাইল */
+        @media (max-width: 768px) {
+            .header-inner { padding: 0 15px; }
+            .college-name { font-size: 1rem; }
+            .brand-logo { width: 50px; height: 50px; }
+            .exams-grid { grid-template-columns: 1fr; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ১. নিউজ টিকার -->
+    <div class="news-ticker">
+        <div class="ticker-label">NOTICE BOARD</div>
+        <div class="ticker-text" id="marqueeText"></div>
+    </div>
+
+    <!-- ২. হেডার -->
+    <header>
+        <div class="header-inner">
+            <div class="brand">
+                <img src="https://i.imgur.com/nIOAmb3.png" alt="Batch Logo" class="brand-logo">
+                <div class="brand-info">
+                    <h1>Govt. Azizul Haque College</h1>
+                    <p>Department of Physics | 1st Year</p>
+                    <span>Session: 2024-25</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button onclick="toggleTheme()" title="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
+                <button onclick="toggleMenu()" title="Open Menu"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ৩. সাইড মেনু -->
+    <div class="overlay" onclick="toggleMenu()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3>
+            <i class="fas fa-times" onclick="toggleMenu()" style="cursor:pointer; font-size:1.5rem;"></i>
+        </div>
+        <div class="menu-list">
+            <a href="#"><i class="fas fa-home"></i> Home</a>
+
+            <a href="https://m.me/j/Aba0w-Wy7tinFqyp/"><i class="fab fa-facebook-messenger"></i> Messenger Group</a>
+            <a href="https://www.facebook.com/share/1MWjp3pfHL/"><i class="fab fa-facebook"></i> Facebook Page</a>
+            <a href="#notices"><i class="fas fa-bell"></i> Important Notices</a>
+            <a href="#gallery"><i class="fas fa-images"></i> Picture Gallery</a>
+        </div>
+    </div>
+
+    <!-- ৪. মেইন কন্টেন্ট -->
+    <div class="container">
+
+        <!-- স্ট্যাটস -->
+        <div class="stats-container">
+            <div class="stat-card" style="border-bottom-color: var(--primary);">
+                <span class="stat-val" id="totalCount">0</span>
+                <span class="stat-label">Total Subjects</span>
+            </div>
+            <div class="stat-card" style="border-bottom-color: #2e7d32;">
+                <span class="stat-val" id="majorCount" style="color:#2e7d32">0</span>
+                <span class="stat-label">Major</span>
+            </div>
+            <div class="stat-card" style="border-bottom-color: #1565c0;">
+                <span class="stat-val" id="nonMajorCount" style="color:#1565c0">0</span>
+                <span class="stat-label">Non-Major</span>
+            </div>
+        </div>
+
+        <!-- রুটিন ডাউনলোড বাটন -->
+        <button class="dl-routine-btn" onclick="downloadRoutineImage()">
+            <i class="fas fa-cloud-download-alt"></i> Download Routine (Image)
+        </button>
+
+        <!-- সার্চ বার (Restored) -->
+        <div class="search-area">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by Subject Name, Code or Date...">
+            <button class="search-btn"><i class="fas fa-search"></i></button>
+        </div>
+
+        <!-- ৫. এক্সাম লিস্ট -->
+        <div class="section-title"><i class="fas fa-calendar-alt"></i> Exam Schedule & Syllabus</div>
+        <div class="exams-grid" id="examContainer">
+            <!-- Cards will be injected here -->
+        </div>
+
+        <!-- ৬. নোটিশ সেকশন (Links Restored) -->
+        <div class="section-title"><i class="fas fa-bullhorn"></i> Important Notices</div>
+        <div class="notice-grid" id="notices">
+            <!-- Notice 1 -->
+            <a href="https://www.nu.ac.bd/uploads/notices/notice_6100_pub_date_08012026.pdf" class="notice-link">
+                <div class="notice-card">
+                    <div>
+                        <span class="n-title">জাতীয় বিশ্ববিদ্যালয়ের ইনকোর্স পরীক্ষা নেওয়ার নোটিশ</span>
+                        <span class="n-date">08 Jan 2026</span>
+                    </div>
+                    <i class="fas fa-chevron-right n-icon"></i>
+                </div>
+            </a>
+            <!-- Notice 2 -->
+            <a href="https://s3.amaarcloudbd.com/aalo/govtazizulhaquecollege/file/notice/general_notice/c7b7b3484dde77db5abb5bb2416d71b1.pdf?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=fc08c574e6fa4232TOBO%2F20260113%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260113T120139Z&X-Amz-SignedHeaders=host&X-Amz-Expires=900&X-Amz-Signature=131975584d8a1e546537bf89b1076ad40206ec2b16b4138c2a24bfcb4f091eaa" class="notice-link">
+                <div class="notice-card" style="border-left-color: #00acc1;">
+                    <div>
+                        <span class="n-title">পাঠদান কার্যক্রম স্থগিত সংক্রান্ত নোটিশ</span>
+                        <span class="n-date">06 Jan 2026</span>
+                    </div>
+                    <i class="fas fa-chevron-right n-icon"></i>
+                </div>
+            </a>
+        </div>
+
+        <!-- ৭. গ্যালারি সেকশন (Enhanced) -->
+        <div class="section-title"><i class="fas fa-images"></i> Download Zone</div>
+        <div class="gallery-grid" id="gallery">
+            <div class="gallery-item" onclick="openModal('https://i.imgur.com/RKhpRxw.png')">
+                <img src="https://i.imgur.com/RKhpRxw.png" alt="Routine">
+                <div class="g-overlay">
+                    <span>Full Routine</span><br>
+                    <span class="g-btn"><i class="fas fa-download"></i> View</span>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openModal('https://i.imgur.com/Ygnpink.png')">
+                <img src="https://i.imgur.com/Ygnpink.png" alt="Syllabus">
+                <div class="g-overlay">
+                    <span>Full Syllabus</span><br>
+                    <span class="g-btn"><i class="fas fa-download"></i> View</span>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openModal('https://i.imgur.com/QM0W5Qe.png')">
+                <img src="https://i.imgur.com/QM0W5Qe.png" alt="Seat Plan">
+                <div class="g-overlay">
+                    <span>Syllabus</span><br>
+                    <span class="g-btn"><i class="fas fa-download"></i> View</span>
+                </div>
+            </div>
+                        <div class="gallery-item" onclick="openModal('https://i.imgur.com/GqbB1mE.png')">
+                <img src="https://i.imgur.com/GqbB1mE.png" alt="Notice">
+                <div class="g-overlay">
+                    <span>Syllabus</span><br>
+                    <span class="g-btn"><i class="fas fa-download"></i> View</span>
+                </div>
+            </div>
+                        <div class="gallery-item" onclick="openModal('https://i.imgur.com/GqbB1mE.png')">
+                                      <div class="gallery-item" onclick="openModal('https://i.imgur.com/1kewbZB.png')">
+                <img src="https://i.imgur.com/1kewbZB.png" alt="Seat Plan">
+                <div class="g-overlay">
+                    <span>Book List</span><br>
+                    <span class="g-btn"><i class="fas fa-download"></i> View</span>
+                </div>
+            </div>
+                <img src="https://i.imgur.com/GqbB1mE.png" alt="Seat Plan">
+                <div class="g-overlay">
+                    <span>Syllabus</span><br>
+                    <span class="g-btn"><i class="fas fa-download"></i> View</span>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openModal('https://i.imgur.com/X0BuPZU.jpeg')">
+                <img src="https://i.imgur.com/X0BuPZU.jpeg" alt="Notice">
+                <div class="g-overlay">
+                    <span>Official Notice</span><br>
+                    <span class="g-btn"><i class="fas fa-download"></i> View</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <!-- HTML for the popup -->
+<div class="sharifulinfo-modal" id="sharifulinfoModal">
+  <div class="sharifulinfo-modal-content">
+    <div class="sharifulinfo-modal-inner">
+      <span class="sharifulinfo-close">&times;</span>
+      
+      <div class="sharifulinfo-header">
+        <div class="sharifulinfo-image-container">
+          <img src="https://i.imgur.com/mm2jLrd.png" alt="MD SHARIFUL ISLAM" class="sharifulinfo-image">
+          <div class="sharifulinfo-image-overlay"></div>
+        </div>
+        <h2 class="sharifulinfo-name">MD SHARIFUL ISLAM</h2>
+        <p class="sharifulinfo-department">DEPARTMENT OF PHYSICS</p>
+        <p class="sharifulinfo-session">SESSION: 24-25</p>
+        <div class="sharifulinfo-profession-container">
+          <p class="sharifulinfo-profession">Professional Web Designer & Developer</p>
+        </div>
+      </div>
+      
+      <div class="sharifulinfo-social">
+        <a href="https://www.facebook.com/share/1G1KQHWXH9/" target="_blank" class="sharifulinfo-social-link">
+          <i class="fab fa-facebook-f"></i>
+          <span>Facebook</span>
+        </a>
+        <a href="https://m.me/msharifulvisionary" target="_blank" class="sharifulinfo-social-link">
+          <i class="fab fa-facebook-messenger"></i>
+          <span>Messenger</span>
+        </a>
+        <a href="https://wa.me/8801735757143" target="_blank" class="sharifulinfo-social-link">
+          <i class="fab fa-whatsapp"></i>
+          <span>WhatsApp</span>
+        </a>
+        <a href="mailto:msharifulvisionary@gmail.com" class="sharifulinfo-social-link">
+          <i class="fas fa-envelope"></i>
+          <span>Email</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <!-- স্ক্রল টু টপ বাটন (Restored) -->
+    <button id="scrollTopBtn" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- ফুটার -->
+    <footer>
+        <img src="https://i.imgur.com/HZjXngF.png" alt="Logo" class="footer-logo">
+        <h3>Govt. Azizul Haque College, Bogura</h3>
+        <p>Department of Physics | Auroras 25 Batch</p>
+        <div class="dev-info">
+            &copy; 2026 Auroras 25 | Developed by </br> <a href="javascript:void(0);" class="designer-link">MD SHARIFUL ISLAM</a>
+        </div>
+    </footer>
+
+<!-- ইমেজ মোডাল -->
+<div class="modal" id="imageModal">
+    <span class="modal-close" onclick="closeModal()">&times;</span>
+    <img src="" id="modalImg">
+    
+    <!-- href এবং download এট্রিবিউট বাদ দেওয়া হয়েছে কারণ আমরা JS দিয়ে কন্ট্রোল করব -->
+    <a class="modal-download" id="modalDlLink" style="cursor: pointer;">
+        <i class="fas fa-download"></i> Download Image
+    </a>
+</div>
+    <!-- প্রিন্টেবল রুটিন (লুকানো) -->
+    <div id="hidden-routine-table">
+        <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:15px;">
+            <h2 style="margin:0; color:#00695c;">Govt. Azizul Haque College, Bogura</h2>
+            <h3 style="margin:5px 0;">Department of Physics | Session: 2024-25</h3>
+            <h1 style="margin:10px 0; font-size:28px;">AURORAS 25 BATCH</h1>
+            <span style="background:#eee; padding:5px 15px; border-radius:4px; font-weight:bold;">1st In-Course Exam Routine</span>
+        </div>
+        <table id="printTable">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Date & Day</th>
+                    <th>Subject Name</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody id="printTableBody">
+                <!-- JS will fill this -->
+            </tbody>
+        </table>
+        <div style="margin-top:30px; display:flex; justify-content:space-between; font-size:12px;">
+            <span>Generated from Auroras25 Web Portal</span>
+            <span>Developer: Md Shariful Islam</span>
+        </div>
+    </div>
+
+    <script>
+        // --- ডেটাবেজ (English Data) ---
+        const exams = [
+{
+    subject: "History of Bangladesh : Language, Culture and Identity",
+    code: "219901",
+    date: "2026-01-15",
+    time: "11:00 AM",
+    type: "nonmajor",
+    syllabus: [
+        {
+            title: "অধ্যায় ২ : ঔপনিবেশিক যুগ",
+            topics: [
+                "পলাশীর যুদ্ধ বলতে কী বুঝ?",
+                "দ্বৈতশাসন বলতে কী বুঝ?",
+                "বেঙ্গল রেনেসাঁ বলতে কী বোঝো?",
+                "হিন্দু সমাজের সংস্কারগুলো আলোচনা",
+                "ইস্ট ইন্ডিয়া কোম্পানির দেওয়ানি লাভের পটভূমি",
+                "দেওয়ানি বলতে কী বোঝো?",
+                "নিয়ামক আইন (Regulating Act) বলতে কী বুঝ?"
+            ]
+        }
+    ]
+},
+{
+    subject: "Mechanics",
+    code: "212701",
+    date: "2026-01-18",
+    time: "11:00 AM",
+    type: "major",
+    syllabus: [
+        {
+            title: "অধ্যায় ১: ভেক্টর বীজগণিত",
+            topics: [
+                "গাউস'স ডাইভারজেন্স (Gauss's Divergence) উপপাদ্য",
+                "গ্রিনের উপপাদ্য (Green's Theorem)"
+            ]
+        },
+        {
+            title: "অধ্যায় ৪: দ্বিমাত্রিক ও ত্রিমাত্রিক গতি",
+            topics: []
+        },
+        {
+            title: "অধ্যায় ৫: বল ও গতি",
+            topics: []
+        },
+        {
+            title: "অধ্যায় ৬: কাজ, শক্তি ও ক্ষমতা",
+            topics: []
+        }
+    ]
+},
+{
+    subject: "Properties of Matter, Waves & Oscillations",
+    code: "212703",
+    date: "2026-01-19",
+    time: "11:00 AM",
+    type: "major",
+    syllabus: [
+        {
+            title: "অধ্যায় ১: মহাকর্ষ",
+            topics: []
+        },
+        {
+            title: "অধ্যায় ৫: তরঙ্গ",
+            topics: []
+        },
+        {
+            title: "অধ্যায় ৬: তরঙ্গ ও শব্দ",
+            topics: []
+        }
+    ]
+},
+{
+    subject: "Heat, Thermodynamics & Radiation",
+    code: "212705",
+    date: "2026-01-20",
+    time: "11:00 AM",
+    type: "major",
+    syllabus: [
+        {
+            title: "অধ্যায় ১: তাপ ও তাপমাত্রা",
+            topics: [
+                "স্থির আয়তন হাইড্রোজেন থার্মোমিটার",
+                "স্থির চাপ বায়ু থার্মোমিটার",
+                "প্লাটিনাম-রোধ থার্মোমিটার",
+                "নিম্ন ও উচ্চ তাপমাত্রা পরিমাণ পদ্ধতি"
+            ]
+        },
+        {
+            title: "অধ্যায় ২: গ্যাসের গতিতত্ত্ব",
+            topics: [
+                "গ্যাসের গতিতাত্ত্বর চালের সমীকরণ",
+                "গড় মুক্তপথের রাশিমালা",
+                "Cp, Cv এর সংজ্ঞা ও সমীকরণ",
+                "গ্যাসের অণুর গড় বেগ, গড় বর্গবেগ এবং বর্গমূল গড় বর্গবেগ"
+            ]
+        },
+        {
+            title: "অধ্যায় ৫: তাপগতিবিদ্যার ২য় সূত্র এবং এনট্রপি",
+            topics: []
+        },
+        {
+            title: "অধ্যায় ৬: তাপগতিবিদ্যার ৩য় সূত্র",
+            topics: []
+        }
+    ]
+},
+            {
+                subject: "Information & Communication Technology",
+                code: "219903",
+                date: "2026-01-21",
+                time: "11:00 AM",
+                type: "nonmajor",
+                syllabus: [
+                    { title: "To be announced later", topics: [] }
+                ]
+            },
+{
+    subject: "Chemistry - 1",
+    code: "212807",
+    date: "2026-01-26",
+    time: "10:45 AM",
+    type: "nonmajor",
+    syllabus: [
+        {
+            title: "দ্বিতীয় অধ্যায়: পরমাণুর গঠন",
+            topics: []
+        },
+        {
+            title: "চতুর্থ অধ্যায়: পর্যায় সারণি",
+            topics: []
+        },
+        {
+            title: "১১ অধ্যায়: অ্যালিফেটিক হাইড্রোকার্বন সমূহ",
+            topics: [
+                "জৈব যৌগের সংজ্ঞা, উৎস, শ্রেণীবিভাগ, সাধারণ শ্রেণীবিভাগ ও কার্যকরী মূলক",
+                "ক্যাটেনেশন, সমানুতা, মুক্ত মূলক, ফ্রী রেডিকেল, কার্বোক্যাটায়ন, কার্বনায়ন, ইলেকট্রফিলিক ও নিউক্লিওফিলিক এর সংজ্ঞা",
+                "জৈব ও অজৈব যৌগের মধ্যে পার্থক্য",
+                "সমগোত্রীয় শ্রেণীর বৈশিষ্ট্য",
+                "কার্বোক্যাটায়নের স্থায়িত্বের ক্রম ও বৈশিষ্ট্য",
+                "জৈব যৌগের নামকরণ (অ্যালকেন)",
+                "অ্যালকেনের সাধারণ প্রস্তুতি ও ধর্ম (ভৌত ও রাসায়নিক)",
+                "অ্যালকেনের ব্যবহার"
+            ]
+        }
+    ]
+},
+{
+    subject: "Fundamentals of Mathematics",
+    code: "213700",
+    date: "Pending",
+    time: "TBA",
+    type: "nonmajor",
+    syllabus: [
+        {
+            title: "অধ্যায় ২ : বাস্তব সংখ্যা",
+            topics: []
+        },
+        {
+            title: "অধ্যায় ৩ : জটিল সংখ্যা",
+            topics: []
+        },
+        {
+            title: "অধ্যায় ৫ : বহুপদী",
+            topics: []
+        }
+    ]
+},
+{
+    subject: "Calculus - 1",
+    code: "213711",
+    date: "Pending",
+    time: "TBA",
+    type: "nonmajor",
+    syllabus: [
+        {
+            title: "অধ্যায় ১ : ফাংশন",
+            topics: [
+                "A - ফাংশন",
+                "B - বিভিন্ন প্রকার ফাংশন"
+            ]
+        },
+        {
+            title: "অধ্যায় ২ : অবিচ্ছিন্নতা ও অন্তরীকরণ যোগ্যতা",
+            topics: [
+                "B - অবিচ্ছিন্নতা",
+                "C - অন্তরীকরণ যোগ্যতা"
+            ]
+        },
+        {
+            title: "অধ্যায় ৩ : অন্তরীকরণ",
+            topics: []
+        },
+        {
+            title: "অধ্যায় ১০ : অনির্দিষ্ট যোগজ",
+            topics: []
+        },
+        {
+            title: "অধ্যায় ১১ : প্রতিস্থাপন পদ্ধতি",
+            topics: []
+        }
+    ]
+}
+        ];
+
+        // --- ফরম্যাটিং ফাংশন ---
+        function formatDate(dateStr) {
+            if(dateStr === "Pending") return { display: "Date Pending", day: "" };
+            const d = new Date(dateStr);
+            return {
+                display: d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+                day: d.toLocaleDateString('en-US', { weekday: 'long' })
+            };
+        }
+
+        // --- রেন্ডারিং ফাংশন ---
+        function renderExams(data) {
+            const container = document.getElementById('examContainer');
+            const printBody = document.getElementById('printTableBody');
+            let marqueeHTML = "";
+            
+            container.innerHTML = '';
+            printBody.innerHTML = '';
+
+            data.forEach(exam => {
+                const dateInfo = formatDate(exam.date);
+                const isMajor = exam.type === 'major';
+                
+                // কাউন্টডাউন লজিক
+                let statusText = "Pending";
+                let statusColor = "#78909c";
+                let borderClass = "";
+
+                if(exam.date !== "Pending") {
+                    const today = new Date(); today.setHours(0,0,0,0);
+                    const examDate = new Date(exam.date);
+                    const diffTime = examDate - today;
+                    const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    if(daysLeft < 0) { statusText = "Completed"; statusColor = "#10b981"; }
+                    else if(daysLeft === 0) { 
+                        statusText = "TODAY EXAM!"; statusColor = "#d32f2f"; borderClass = "border: 2px solid #d32f2f;";
+                        marqueeHTML += `<span style="color:#ff5252">🔴 TODAY: ${exam.subject}</span>`;
+                    }
+                    else if(daysLeft === 1) { 
+                        statusText = "Tomorrow"; statusColor = "#f57c00"; 
+                        marqueeHTML += `<span style="color:#ffab40">⚠️ TOMORROW: ${exam.subject}</span>`;
+                    }
+                    else { 
+                        statusText = `${daysLeft} Days Left`; statusColor = "#00897b"; 
+                        marqueeHTML += `<span>📅 Upcoming: ${exam.subject}</span>`;
+                    }
+                }
+
+                // সিলেবাস HTML তৈরি (Nested Loop)
+                let syllabusHTML = `<div style="text-align:center; color:#999;">No syllabus info</div>`;
+                if (exam.syllabus.length > 0) {
+                    syllabusHTML = exam.syllabus.map(chap => `
+                        <div class="chapter-box">
+                            <div class="chapter-title">▪ ${chap.title}</div>
+                            ${chap.topics.length > 0 ? `
+                                <ul class="topic-list">
+                                    ${chap.topics.map(t => `<li>${t}</li>`).join('')}
+                                </ul>
+                            ` : ''}
+                        </div>
+                    `).join('');
+                }
+
+                // কার্ড HTML
+                const card = `
+                    <div class="exam-card" style="${borderClass}">
+                        <div class="ec-header">
+                            <span class="code-barcode">${exam.code}</span>
+                            <span class="type-badge ${isMajor ? 'bg-major' : 'bg-non'}">${isMajor ? 'Major' : 'Non-Major'}</span>
+                        </div>
+                        <div class="ec-body">
+                            <h3 class="ec-subject">${exam.subject}</h3>
+                            
+                            <div class="ec-meta">
+                                <div class="meta-item"><i class="far fa-calendar-alt"></i> ${dateInfo.display}</div>
+                                <div class="meta-item"><i class="far fa-clock"></i> ${exam.time}</div>
+                            </div>
+
+                            <div class="ec-timer" style="border-left-color: ${statusColor}">
+                                <div class="timer-val" style="color: ${statusColor}">${statusText}</div>
+                                <div style="font-size:0.8rem; color:#888;">${dateInfo.day}</div>
+                            </div>
+
+                            <button class="syllabus-toggle" onclick="this.nextElementSibling.classList.toggle('show')">
+                                <i class="fas fa-book-open"></i> View Syllabus & Topics <i class="fas fa-chevron-down" style="margin-left:auto"></i>
+                            </button>
+                            <div class="syllabus-content">
+                                ${syllabusHTML}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+
+                // প্রিন্ট টেবিল HTML
+                printBody.innerHTML += `
+                    <tr>
+                        <td style="font-family:monospace; font-weight:bold;">${exam.code}</td>
+                        <td>${dateInfo.display}<br><small>${dateInfo.day}</small></td>
+                        <td>${exam.subject}</td>
+                        <td>${exam.time}</td>
+                    </tr>
+                `;
+            });
+
+            // টিকার আপডেট
+            if(marqueeHTML === "") marqueeHTML = "<span>✅ Check the full schedule below for updates...</span>";
+            document.getElementById('marqueeText').innerHTML = marqueeHTML;
+
+            // স্ট্যাটস আপডেট
+            document.getElementById('totalCount').innerText = data.length;
+            document.getElementById('majorCount').innerText = data.filter(e => e.type === 'major').length;
+            document.getElementById('nonMajorCount').innerText = data.filter(e => e.type === 'nonmajor').length;
+        }
+
+        // --- সার্চ ফাংশন ---
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            const filtered = exams.filter(ex => 
+                ex.subject.toLowerCase().includes(val) || 
+                ex.code.includes(val) ||
+                ex.date.toLowerCase().includes(val)
+            );
+            renderExams(filtered);
+        });
+
+        // --- রুটিন ডাউনলোড (Image) ---
+        function downloadRoutineImage() {
+            const element = document.getElementById('hidden-routine-table');
+            const btn = document.querySelector('.dl-routine-btn');
+            const oldText = btn.innerHTML;
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+            html2canvas(element, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Auroras25_Exam_Routine.jpg';
+                link.href = canvas.toDataURL('image/jpeg');
+                link.click();
+                btn.innerHTML = oldText;
+            }).catch(err => {
+                alert('Error generating image');
+                btn.innerHTML = oldText;
+            });
+        }
+
+        // --- অন্যান্য ফাংশন ---
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.querySelector('.overlay').classList.toggle('active');
+        }
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+        }
+        
+// --- নতুন ডাউনলোড ফাংশন (Canvas মেথড) ---
+function downloadImage(url, filename) {
+    const btn = document.getElementById('modalDlLink');
+    const originalText = btn.innerHTML;
+    
+    // লোডিং দেখানো
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রসেসিং হচ্ছে...';
+    btn.style.pointerEvents = 'none';
+
+    const img = new Image();
+    // এটি ক্রস-অরিজিন ইস্যু সমাধান করবে
+    img.crossOrigin = "Anonymous";
+    
+    // ক্যাশ সমস্যা এড়াতে URL এর শেষে রেন্ডম টাইমস্ট্যাম্প যোগ করা হলো
+    img.src = url + "?t=" + new Date().getTime();
+
+    img.onload = function() {
+        // ভার্চুয়াল ক্যানভাস তৈরি
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+
+        // ইমেজকে ডাটা URL এ কনভার্ট করা
+        try {
+            const dataURL = canvas.toDataURL("image/png");
+            
+            // ফেক লিংক তৈরি করে ক্লিক করা
+            const a = document.createElement("a");
+            a.href = dataURL;
+            a.download = filename || "download.png";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } catch (err) {
+            console.error("CORS Error:", err);
+            alert("সিকিউরিটি জনিত কারণে ডাউনলোড হচ্ছে না। ইমেজটি নতুন ট্যাবে ওপেন হচ্ছে, দয়া করে সেখান থেকে সেভ করুন।");
+            window.open(url, '_blank');
+        } finally {
+            // বাটন রিসেট
+            btn.innerHTML = originalText;
+            btn.style.pointerEvents = 'auto';
+        }
+    };
+
+    img.onerror = function() {
+        alert("ইমেজ লোড করতে সমস্যা হয়েছে।");
+        btn.innerHTML = originalText;
+        btn.style.pointerEvents = 'auto';
+    };
+}
+
+// --- মোডাল ওপেন ফাংশন ---
+function openModal(src, name) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImg');
+    const dlBtn = document.getElementById('modalDlLink');
+
+    modal.classList.add('active');
+    modalImg.src = src;
+
+    // আগের ইভেন্ট মুছে নতুন ইভেন্ট যোগ করা
+    // (পুরানো href সরিয়ে দেওয়া হচ্ছে)
+    dlBtn.removeAttribute('href');
+    dlBtn.onclick = function() {
+        downloadImage(src, name);
+    };
+}
+
+// --- মোডাল ক্লোজ ফাংশন ---
+function closeModal() {
+    document.getElementById('imageModal').classList.remove('active');
+}
+        // স্ক্রল বাটন লজিক
+        window.onscroll = function() {
+            const btn = document.getElementById('scrollTopBtn');
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btn.style.display = "flex";
+            } else {
+                btn.style.display = "none";
+            }
+        };
+
+        // --- ইনিশিয়ালাইজ ---
+        renderExams(exams);
+
+    </script>
+    
+    <!-- JavaScript -->
+<script>
+// Get modal element
+const sharifulinfoModal = document.getElementById('sharifulinfoModal');
+
+// Function to open modal
+function openSharifulinfoModal() {
+  sharifulinfoModal.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+// Function to close modal
+function closeSharifulinfoModal() {
+  sharifulinfoModal.style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+// Close modal when clicking on X
+document.querySelector('.sharifulinfo-close').addEventListener('click', closeSharifulinfoModal);
+
+// Close modal when clicking outside of it
+window.addEventListener('click', function(event) {
+  if (event.target === sharifulinfoModal) {
+    closeSharifulinfoModal();
+  }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    closeSharifulinfoModal();
+  }
+});
+
+// Update your footer link to use this function
+document.addEventListener('DOMContentLoaded', function() {
+  const designerLink = document.querySelector('.designer-link');
+  if (designerLink) {
+    designerLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      openSharifulinfoModal();
+    });
+  }
+});
+</script>
+</body>
+</html>
