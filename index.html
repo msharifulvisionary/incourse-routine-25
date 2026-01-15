@@ -1667,7 +1667,7 @@ footer {
             <i class="fab fa-facebook-messenger"></i> মেসেঞ্জার গ্রুপ
         </a>
         <a href="javascript:void(0);" onclick="openDeveloperInfo(); toggleMenu();">
-            <i class="fas fa-code"></i> ডেভেলপার
+            <i class="fas fa-code"></i> ডেভেলপার তথ্য
         </a>
     </div>
 </div>
@@ -1842,7 +1842,7 @@ footer {
         <div class="gallery-item" onclick="openModal('https://i.imgur.com/QM0W5Qe.png', 'সিট প্ল্যান')">
             <img src="https://i.imgur.com/QM0W5Qe.png" alt="সিট প্ল্যান">
             <div class="g-overlay">
-                <span>সিট প্ল্যান</span><br>
+                <span>সিলেবাস</span><br>
                 <span class="g-btn"><i class="fas fa-download"></i> দেখুন</span>
             </div>
         </div>
@@ -1856,7 +1856,7 @@ footer {
         <div class="gallery-item" onclick="openModal('https://i.imgur.com/GqbB1mE.png', 'নোটিশ')">
             <img src="https://i.imgur.com/GqbB1mE.png" alt="নোটিশ">
             <div class="g-overlay">
-                <span>নোটিশ</span><br>
+                <span>সিলেবাস</span><br>
                 <span class="g-btn"><i class="fas fa-download"></i> দেখুন</span>
             </div>
         </div>
@@ -1888,9 +1888,9 @@ footer {
 <footer>
     <img src="https://i.imgur.com/HZjXngF.png" alt="লোগো" class="footer-logo">
     <h3>সরকারি আজিজুল হক কলেজ, বগুড়া</h3>
-    <p>পদার্থবিজ্ঞান বিভাগ | অরোরাস ২৫ ব্যাচ</p>
+    <p>পদার্থবিজ্ঞান বিভাগ | AURORAS 25 BATCH</p>
     <div class="dev-info">
-        &copy; ২০২৬ অরোরাস ২৫ | ডেভেলপ করেছেন <a href="javascript:void(0);" onclick="openDeveloperInfo()">মোঃ শরিফুল ইসলাম</a>
+        &copy; 2026 AURORAS'25| Devlop By </br> <a href="javascript:void(0);" onclick="openDeveloperInfo()">MD SHARIFUL ISLAM</a>
     </div>
 </footer>
 
@@ -1900,11 +1900,9 @@ footer {
     <div style="background: white; padding: 25px; border-radius: 15px; max-width: 350px; width: 90%; text-align: center;">
         <img src="https://i.imgur.com/mm2jLrd.png" alt="MD SHARIFUL ISLAM" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 4px solid var(--primary);">
         <h2 style="color: #333; margin-bottom: 8px; font-size: 1.3rem;">MD SHARIFUL ISLAM</h2>
-        <p style="color: var(--primary); font-weight: 600; margin-bottom: 5px; font-size: 1rem;">পদার্থবিজ্ঞান বিভাগ</p>
-        <p style="color: #666; margin-bottom: 8px; font-size: 0.9rem;">সেশন: ২০২৪-২৫</p>
-        <p style="background: #f0f8ff; padding: 8px 15px; border-radius: 25px; color: #1a73e8; font-weight: 600; margin-bottom: 20px; font-size: 0.9rem;">
-            প্রফেশনাল ওয়েব ডিজাইনার ও ডেভেলপার
-        </p>
+        <p style="color: var(--primary); font-weight: 600; margin-bottom: 5px; font-size: 1rem;">DEPARTMENT OF PHYSICS</p>
+        <p style="color: #666; margin-bottom: 8px; font-size: 0.9rem;">SESSION:24-25</p>
+        <p style="background: #f0f8ff; padding: 8px 15px; border-radius: 25px; color: #1a73e8; font-weight: 600; margin-bottom: 20px; font-size: 0.9rem;">Professional Web Designer & Devloper</p>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
             <a href="https://www.facebook.com/share/1G1KQHWXH9/" target="_blank" style="display: flex; flex-direction: column; align-items: center; padding: 10px; border-radius: 8px; background: #f0f2f5; text-decoration: none; color: #333; transition: all 0.3s;">
                 <i class="fab fa-facebook-f" style="font-size: 18px; margin-bottom: 5px; color: #1877f2;"></i>
@@ -1952,8 +1950,8 @@ footer {
         </tbody>
     </table>
     <div style="margin-top:25px; padding-top:15px; border-top:2px solid #ddd; text-align:center; font-size:13px; color:#666;">
-        <div>উত্পন্ন হয়েছে: অরোরাস ২৫ ওয়েব পোর্টাল</div>
-        <div style="margin-top:5px;">ডেভেলপার: মোঃ শরিফুল ইসলাম | তারিখ: <span id="routineCurrentDate"></span></div>
+        <div>Generated Form - AURORAS'25 WEB PORTAL</div>
+        <div style="margin-top:5px;">Devlop By: MD SHARIFUL ISLAM | Date: <span id="routineCurrentDate"></span></div>
     </div>
 </div>
 
@@ -1967,7 +1965,7 @@ footer {
             শিক্ষা বর্ষ: ২০২৪-২০২৫
         </div>
     </div>
-    <table class="syllabus-table" id="syllabusTable">
+    <table class="syllabus-table" id="hiddenSyllabusTable">
         <thead>
             <tr>
                 <th width="15%">বিষয় কোড</th>
@@ -1976,16 +1974,15 @@ footer {
                 <th width="30%">টপিকসমূহ</th>
             </tr>
         </thead>
-        <tbody id="syllabusTableBody">
+        <tbody id="hiddenSyllabusTableBody">
             <!-- JS দিয়ে ফিল করা হবে -->
         </tbody>
     </table>
     <div style="margin-top:25px; padding-top:15px; border-top:2px solid #ddd; text-align:center; font-size:13px; color:#666;">
-        <div>উত্পন্ন হয়েছে: অরোরাস ২৫ ওয়েব পোর্টাল</div>
-        <div style="margin-top:5px;">ডেভেলপার: মোঃ শরিফুল ইসলাম | তারিখ: <span id="currentDate"></span></div>
+        <div>Generated from - AURORAS'25 WEB PORTAL</div>
+        <div style="margin-top:5px;">Devlop By - MD SHARIFUL ISLAM| Date: <span id="hiddenCurrentDate"></span></div>
     </div>
 </div>
-
 <script>
 // ডেটাবেজ - সম্পূর্ণ সিলেবাস সহ
 const exams = [
@@ -2117,7 +2114,7 @@ const exams = [
         room: "২২১",
         syllabus: [
             { 
-                title: "শীঘ্রই ঘোষণা করা হবে", 
+                title: "", 
                 topics: [] 
             }
         ]
@@ -2130,7 +2127,7 @@ const exams = [
         type: "nonmajor",
         duration: "৩০ মিনিট",
         fullMarks: "১০",
-        room: "২২১",
+        room: "জানা নেই",
         syllabus: [
             {
                 title: "অধ্যায় ২ : বাস্তব সংখ্যা",
@@ -2154,7 +2151,7 @@ const exams = [
         type: "nonmajor",
         duration: "৩০ মিনিট",
         fullMarks: "১০",
-        room: "২২১",
+        room: "জানা নেই",
         syllabus: [
             {
                 title: "দ্বিতীয় অধ্যায়: পরমাণুর গঠন",
@@ -2187,7 +2184,7 @@ const exams = [
         type: "nonmajor",
         duration: "৩০ মিনিট",
         fullMarks: "১০",
-        room: "২২১",
+        room: "জানা নেই",
         syllabus: [
             {
                 title: "অধ্যায় ১ : ফাংশন",
@@ -2225,10 +2222,10 @@ const exams = [
         type: "nonmajor",
         duration: "৩০ মিনিট",
         fullMarks: "১০",
-        room: "৪০২/৪০৩",
+        room: "৪০২/৪০৩(১০ তলা ভবন )",
         syllabus: [
             { 
-                title: "শীঘ্রই ঘোষণা করা হবে", 
+                title: "", 
                 topics: [] 
             }
         ]
@@ -2621,49 +2618,103 @@ function updateRoutineTable(data) {
 // সিলেবাস টেবিল আপডেট
 function updateSyllabusTable(data) {
     const tbody = document.getElementById('syllabusTableBody');
+    const hiddenTbody = document.getElementById('hiddenSyllabusTableBody');
+    
+    // উভয় টেবিল ক্লিয়ার করুন
     tbody.innerHTML = '';
+    hiddenTbody.innerHTML = '';
     
     // তারিখ অনুযায়ী সাজানো
     const sortedExams = [...data].sort((a, b) => new Date(a.date) - new Date(b.date));
     
     sortedExams.forEach(exam => {
+        // দৃশ্যমান টেবিলের জন্য সিলেবাস HTML
         let syllabusHTML = '';
+        let chaptersHTML = '';
+        let topicsHTML = '';
         
         if(exam.syllabus.length > 0) {
             exam.syllabus.forEach(chap => {
-                let topicsHTML = '';
+                chaptersHTML += `<div style="margin-bottom: 8px; font-weight: 600;">${chap.title}</div>`;
+                if(chap.topics.length > 0) {
+                    topicsHTML += `<div style="margin-bottom: 12px;">`;
+                    chap.topics.forEach(topic => {
+                        topicsHTML += `<div style="padding-left: 12px; margin-bottom: 4px;">• ${topic}</div>`;
+                    });
+                    topicsHTML += `</div>`;
+                } else {
+                    topicsHTML += ``;
+                }
+            });
+        } else {
+            chaptersHTML = '';
+            topicsHTML = '';
+        }
+        
+        // দৃশ্যমান সিলেবাস টেবিলে সারি যোগ করুন
+        let visibleSyllabusHTML = '';
+        if(exam.syllabus.length > 0) {
+            exam.syllabus.forEach(chap => {
+                let topicsHTMLInner = '';
                 
                 if(chap.topics.length > 0) {
                     chap.topics.forEach(topic => {
-                        topicsHTML += `<span class="syllabus-topic">${topic}</span>`;
+                        topicsHTMLInner += `<span class="syllabus-topic">${topic}</span>`;
                     });
-                } else if(chap.title !== "শীঘ্রই ঘোষণা করা হবে") {
-                    topicsHTML = '<span style="color:#999; font-style:italic;">টপিকের তথ্য শীঘ্রই আপডেট করা হবে</span>';
+                } else if(chap.title !== "") {
+                    topicsHTMLInner = '';
                 } else {
-                    topicsHTML = '<span style="color:#999; font-style:italic;">সিলেবাস শীঘ্রই আপডেট করা হবে</span>';
+                    topicsHTMLInner = '';
                 }
                 
-                syllabusHTML += `
+                visibleSyllabusHTML += `
                     <div style="margin-bottom: 12px;">
                         <span class="syllabus-chapter">${chap.title}</span>
-                        ${topicsHTML}
+                        ${topicsHTMLInner}
                     </div>
                 `;
             });
         } else {
-            syllabusHTML = '<span style="color:#999; font-style:italic;">সিলেবাসের তথ্য পাওয়া যায়নি</span>';
+            visibleSyllabusHTML = '<span style="color:#999; font-style:italic;">সিলেবাসের তথ্য পাওয়া যায়নি</span>';
         }
         
-        const row = document.createElement('tr');
-        row.innerHTML = `
+        // দৃশ্যমান টেবিলে সারি যোগ
+        const visibleRow = document.createElement('tr');
+        visibleRow.innerHTML = `
             <td>${exam.subject}</td>
             <td>${exam.code}</td>
-            <td>${syllabusHTML}</td>
+            <td>${visibleSyllabusHTML}</td>
         `;
-        tbody.appendChild(row);
+        tbody.appendChild(visibleRow);
+        
+        // হিডেন টেবিলে সারি যোগ
+        const hiddenRow = document.createElement('tr');
+        hiddenRow.innerHTML = `
+            <td>${exam.code}</td>
+            <td>${exam.subject}</td>
+            <td>${chaptersHTML}</td>
+            <td>${topicsHTML}</td>
+        `;
+        hiddenTbody.appendChild(hiddenRow);
     });
+    
+    // বর্তমান তারিখ সেট করুন (উভয় টেবিলের জন্য)
+    const now = new Date();
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    const currentDate = now.toLocaleDateString('bn-BD', options);
+    
+    // দৃশ্যমান টেবিলের তারিখ আপডেট
+    const dateElement = document.getElementById('currentDate');
+    if(dateElement) {
+        dateElement.textContent = currentDate;
+    }
+    
+    // হিডেন টেবিলের তারিখ আপডেট
+    const hiddenDateElement = document.getElementById('hiddenCurrentDate');
+    if(hiddenDateElement) {
+        hiddenDateElement.textContent = currentDate;
+    }
 }
-
 // রেন্ডারিং ফাংশন - ইউনিক ডিজাইন
 function renderExams(data) {
     const container = document.getElementById('examContainer');
@@ -2964,6 +3015,7 @@ function downloadSyllabusImage() {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> তৈরি হচ্ছে...';
     btn.disabled = true;
     
+    // এই লাইনটি নিশ্চিত করুন
     const element = document.getElementById('hidden-syllabus-table');
     
     html2canvas(element, { 
@@ -3106,6 +3158,8 @@ function init() {
     
     // সিলেবাস টেবিল আপডেট
     updateSyllabusTable(exams);
+    // সিলেবাস টেবিল আপডেট
+updateSyllabusTable(data);
 }
 
 // ডকুমেন্ট লোড হলে ইনিশিয়ালাইজ করুন
