@@ -1,1299 +1,3018 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auroras 25 - Exam Dashboard</title>
     
-    <!-- ফন্ট ইমপোর্ট (Hind Siliguri for Bangla, Poppins for English/Numbers) -->
+    <!-- ফন্ট ইমপোর্ট -->
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- ইমেজ জেনারেটর -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<!-- CSS Styling -->
+    
 <style>
-.sharifulinfo-modal {
-  display: none;
-  position: fixed;
-  z-index: 9999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(5px);
-  animation: sharifulinfo-fadeIn 0.4s ease;
-  overflow-y: auto;
-  padding: 20px 10px;
-  box-sizing: border-box;
+:root {
+    --primary: #00897b;
+    --primary-dark: #004d40;
+    --secondary: #00acc1;
+    --accent: #e53935;
+    --completed: #4caf50;
+    --upcoming: #ff9800;
+    --bg-body: #f4f6f8;
+    --bg-card: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --radius: 10px;
 }
 
-.sharifulinfo-modal-content {
-  position: relative;
-  background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
-  margin: auto;
-  border-radius: 25px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  width: 100%;
-  max-width: 420px;
-  animation: sharifulinfo-slideIn 0.5s ease;
-  color: white;
-  text-align: center;
-  overflow: hidden;
-  box-sizing: border-box;
+body.dark-mode {
+    --bg-body: #0f172a;
+    --bg-card: #1e293b;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    --primary: #2dd4bf;
+    --completed: #10b981;
+    --upcoming: #f59e0b;
 }
 
-.sharifulinfo-modal-inner {
-  padding: 30px 25px;
-  position: relative;
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    transition: 0.3s;
+    padding-top: 50px;
 }
 
-.sharifulinfo-modal-content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: linear-gradient(90deg, #1a2a6c, #b21f1f, #fdbb2d);
-  z-index: 1;
+/* নিউজ টিকার */
+.news-ticker {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background: linear-gradient(90deg, #1a237e, #0d47a1);
+    color: white;
+    display: flex;
+    align-items: center;
+    z-index: 2000;
+    border-bottom: 2px solid var(--accent);
+    padding: 0 10px;
+    overflow: hidden;
 }
 
-.sharifulinfo-close {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  color: white;
-  font-size: 30px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 10;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+.ticker-label {
+    background: var(--accent);
+    padding: 0 15px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    z-index: 2;
+    min-width: 120px;
 }
 
-.sharifulinfo-close:hover {
-  transform: scale(1.1) rotate(90deg);
-  background: rgba(255, 255, 255, 0.2);
-  color: #fdbb2d;
+.ticker-content {
+    flex: 1;
+    overflow: hidden;
+    padding-left: 15px;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
-.sharifulinfo-header {
-  margin-bottom: 30px;
+.ticker-text {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 100%;
+    animation: marquee 25s linear infinite;
+    font-size: 0.9rem;
 }
 
-.sharifulinfo-image-container {
-  position: relative;
-  display: inline-block;
-  margin-bottom: 25px;
+.ticker-text span {
+    margin-right: 40px;
 }
 
-.sharifulinfo-image {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  border: 5px solid rgba(255, 255, 255, 0.3);
-  object-fit: cover;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  transition: all 0.4s ease;
-  position: relative;
-  z-index: 2;
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
 }
 
-.sharifulinfo-image:hover {
-  transform: scale(1.05);
-  border-color: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+/* হেডার */
+header {
+    background: var(--bg-card);
+    box-shadow: var(--shadow);
+    padding: 12px 0;
+    position: sticky;
+    top: 50px;
+    z-index: 1000;
+    border-bottom: 1px solid var(--border-color);
 }
 
-.sharifulinfo-image-overlay {
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  right: -10px;
-  bottom: -10px;
-  border-radius: 50%;
-  background: linear-gradient(45deg, #1a2a6c, #b21f1f, #fdbb2d);
-  z-index: 1;
-  opacity: 0.5;
-  animation: sharifulinfo-rotate 10s linear infinite;
+.header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.sharifulinfo-name {
-  font-size: 26px;
-  margin: 15px 0 10px;
-  font-weight: 700;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-  letter-spacing: 0.5px;
-}
-
-.sharifulinfo-department {
-  font-size: 18px;
-  margin: 12px 0;
-  font-weight: 600;
-  color: #fdbb2d;
-  letter-spacing: 1px;
-}
-
-.sharifulinfo-session {
-  font-size: 16px;
-  margin: 10px 0;
-  font-weight: 500;
-  opacity: 0.9;
-}
-
-.sharifulinfo-profession-container {
-  margin: 20px 0;
-}
-
-.sharifulinfo-profession {
-  font-size: 16px;
-  margin: 0;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.95);
-  padding: 12px 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 30px;
-  display: inline-block;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.sharifulinfo-social {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin-top: 25px;
-}
-
-.sharifulinfo-social-link {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 15px 10px;
-  border-radius: 15px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  font-size: 18px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.sharifulinfo-social-link:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-}
-
-.sharifulinfo-social-link:nth-child(1):hover {
-  background: linear-gradient(135deg, rgba(59, 89, 152, 0.8), rgba(59, 89, 152, 0.9));
-}
-
-.sharifulinfo-social-link:nth-child(2):hover {
-  background: linear-gradient(135deg, rgba(0, 132, 255, 0.8), rgba(0, 132, 255, 0.9));
-}
-
-.sharifulinfo-social-link:nth-child(3):hover {
-  background: linear-gradient(135deg, rgba(37, 211, 102, 0.8), rgba(37, 211, 102, 0.9));
-}
-
-.sharifulinfo-social-link:nth-child(4):hover {
-  background: linear-gradient(135deg, rgba(212, 70, 56, 0.8), rgba(212, 70, 56, 0.9));
-}
-
-.sharifulinfo-social-link i {
-  font-size: 24px;
-  margin-bottom: 8px;
-}
-
-.sharifulinfo-social-link span {
-  font-size: 12px;
-  font-weight: 500;
-  opacity: 0.9;
-}
-
-/* Animations */
-@keyframes sharifulinfo-fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes sharifulinfo-slideIn {
-  from { 
-    opacity: 0;
-    transform: translateY(-30px) scale(0.95);
-  }
-  to { 
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes sharifulinfo-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* Responsive Design for Mobile */
-@media (max-width: 480px) {
-  .sharifulinfo-modal {
-    padding: 10px 5px;
-  }
-  
-  .sharifulinfo-modal-content {
-    max-width: 95%;
-    border-radius: 20px;
-  }
-  
-  .sharifulinfo-modal-inner {
-    padding: 25px 20px;
-  }
-  
-  .sharifulinfo-image {
-    width: 140px;
-    height: 140px;
-  }
-  
-  .sharifulinfo-name {
-    font-size: 22px;
-  }
-  
-  .sharifulinfo-department {
-    font-size: 16px;
-  }
-  
-  .sharifulinfo-session, 
-  .sharifulinfo-profession {
-    font-size: 14px;
-  }
-  
-  .sharifulinfo-social {
-    grid-template-columns: 1fr 1fr;
+.brand {
+    display: flex;
+    align-items: center;
     gap: 12px;
-  }
-  
-  .sharifulinfo-social-link {
-    padding: 12px 8px;
-  }
-  
-  .sharifulinfo-social-link i {
-    font-size: 22px;
-  }
-  
-  .sharifulinfo-social-link span {
-    font-size: 11px;
-  }
-  
-  .sharifulinfo-close {
-    top: 10px;
-    right: 15px;
-    width: 35px;
-    height: 35px;
-    font-size: 26px;
-  }
 }
 
-/* For very small screens */
-@media (max-width: 350px) {
-  .sharifulinfo-modal-inner {
+.brand-logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.brand-info {
+    text-align: left;
+}
+
+.college-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
+
+.department {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 2px;
+}
+
+.batch-info {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.session-badge {
+    display: inline-block;
+    background: rgba(0,137,123,0.1);
+    color: var(--primary);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 3px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.header-actions button {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: var(--text-main);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.header-actions button:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* কাউন্টডাউন ব্যানার */
+.countdown-banner {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    color: white;
+    padding: 15px;
+    margin: 15px auto;
+    border-radius: var(--radius);
+    max-width: 1200px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.countdown-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+    background-size: cover;
+}
+
+.countdown-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.countdown-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: white;
+}
+
+.countdown-subject {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+
+.countdown-timer {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.timer-unit {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+    min-width: 70px;
+    backdrop-filter: blur(10px);
+}
+
+.timer-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    line-height: 1;
+}
+
+.timer-label {
+    font-size: 0.8rem;
+    margin-top: 5px;
+    opacity: 0.9;
+}
+
+/* সাইডবার মেনু */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 280px;
+    height: 100%;
+    background: var(--bg-card);
+    box-shadow: -5px 0 20px rgba(0,0,0,0.2);
+    transition: right 0.3s ease;
+    z-index: 1000;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.sidebar.active {
+    right: 0;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary);
+}
+
+.sidebar-header h3 {
+    color: var(--primary);
+    font-size: 1.3rem;
+}
+
+.menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.menu-list a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    background: var(--bg-body);
+    border-radius: var(--radius);
+    color: var(--text-main);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.menu-list a:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateX(5px);
+}
+
+.menu-list a i {
+    width: 20px;
+    text-align: center;
+}
+
+/* ফিল্টার বাটন - হরাইজন্টাল */
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px auto;
+    max-width: 1200px;
+    padding: 0 15px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.filter-buttons::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.filter-btn.active {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.filter-all {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+}
+
+.filter-major {
+    background: linear-gradient(135deg, #2e7d32, #4caf50);
+    color: white;
+}
+
+.filter-nonmajor {
+    background: linear-gradient(135deg, #1565c0, #2196f3);
+    color: white;
+}
+
+/* স্ট্যাটস - হরাইজন্টাল */
+.stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px auto;
+    max-width: 1200px;
+    padding: 0 15px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.stats-container::-webkit-scrollbar {
+    display: none;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    padding: 15px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    min-width: 120px;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-val {
+    font-size: 1.8rem;
+    font-weight: 800;
+    display: block;
+    line-height: 1.2;
+    margin-bottom: 5px;
+    font-family: 'Poppins', sans-serif;
+    color: var(--primary);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+/* মেইন কন্টেইনার */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 20px 15px;
-  }
-  
-  .sharifulinfo-image {
-    width: 120px;
-    height: 120px;
-  }
-  
-  .sharifulinfo-name {
-    font-size: 20px;
-  }
-  
-  .sharifulinfo-social {
-    grid-template-columns: 1fr;
-  }
+}
+
+/* সার্চ বার */
+.search-area {
+    position: relative;
+    margin: 20px auto 30px;
+    max-width: 800px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 14px 50px 14px 20px;
+    border-radius: 25px;
+    border: 2px solid transparent;
+    background: var(--bg-card);
+    box-shadow: var(--shadow);
+    font-size: 1rem;
+    color: var(--text-main);
+    outline: none;
+    transition: 0.3s;
+    font-family: 'Noto Sans Bengali', sans-serif;
+}
+
+.search-input:focus {
+    border-color: var(--primary);
+}
+
+.search-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--primary);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+/* ডাউনলোড বাটন */
+.download-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 30px auto;
+    max-width: 800px;
+    flex-wrap: wrap;
+}
+
+.dl-btn {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(42, 82, 152, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    min-width: 200px;
+    justify-content: center;
+}
+
+.dl-btn:hover {
+    transform: translateY(-3px);
+}
+
+.dl-syllabus {
+    background: linear-gradient(135deg, #c2185b, #e91e63);
+}
+
+/* এক্সাম কার্ড - ইউনিক ডিজাইন */
+.section-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 30px 0 20px;
+    padding-left: 12px;
+    border-left: 4px solid var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.exams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.exam-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    position: relative;
+    height: auto;
+    min-height: 340px;
+}
+
+.exam-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.exam-card.completed {
+    opacity: 0.9;
+    position: relative;
+    overflow: hidden;
+}
+
+.exam-card.completed::after {
+    content: '✅ পরীক্ষা সম্পন্ন';
+    position: absolute;
+    top: 10px;
+    right: -30px;
+    background: var(--completed);
+    color: white;
+    padding: 6px 35px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transform: rotate(45deg);
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* কার্ড হেডার - ইউনিক ডিজাইন */
+.ec-header {
+    padding: 15px;
+    background: linear-gradient(135deg, rgba(0,137,123,0.1), rgba(0,137,123,0.05));
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.code-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary);
+    background: rgba(0,137,123,0.1);
+    padding: 4px 10px;
+    border-radius: 15px;
+    border: 1px solid rgba(0,137,123,0.2);
+}
+
+.type-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.bg-major {
+    background: linear-gradient(135deg, #2e7d32, #4caf50);
+    color: white;
+}
+
+.bg-non {
+    background: linear-gradient(135deg, #1565c0, #2196f3);
+    color: white;
+}
+
+/* কার্ড বডি - ইউনিক লেআউট */
+.ec-body {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.subject-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    line-height: 1.4;
+    color: var(--text-main);
+    text-align: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+}
+
+.subject-title::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 3px;
+}
+
+/* তথ্য গ্রিড - ইউনিকভাবে সাজানো */
+.exam-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, rgba(0,137,123,0.05), rgba(0,137,123,0.02));
+    padding: 10px;
+    border-radius: 8px;
+    border-left: 3px solid var(--primary);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.info-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0,137,123,0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.info-item:hover::before {
+    opacity: 1;
+}
+
+.info-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.info-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.info-label i {
+    font-size: 0.8rem;
+    color: var(--primary);
+}
+
+.info-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+}
+
+/* স্ট্যাটাস সেকশন - ইউনিক */
+.status-section {
+    margin: 15px 0;
+    padding: 12px;
+    background: linear-gradient(135deg, rgba(0,137,123,0.05), rgba(0,137,123,0.02));
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid rgba(0,137,123,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.status-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--primary), var(--secondary));
+}
+
+.status-text {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.status-details {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+}
+
+/* মেটা ইনফো বার - ইউনিক */
+.meta-info-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8px 5px;
+    background: var(--bg-body);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.meta-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.meta-item:hover::before {
+    transform: scaleX(1);
+}
+
+.meta-item:hover {
+    background: rgba(0,137,123,0.05);
+    transform: translateY(-2px);
+}
+
+.meta-icon {
+    font-size: 1rem;
+    color: var(--primary);
+    margin-bottom: 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.meta-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+}
+
+.meta-value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-top: 2px;
+    position: relative;
+    z-index: 1;
+}
+
+/* সবগুলো দেখুন বাটন */
+.show-all-container {
+    text-align: center;
+    margin: 25px 0;
+}
+
+.show-all-btn {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,137,123,0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.show-all-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,137,123,0.4);
+}
+
+.hide-btn {
+    background: linear-gradient(135deg, #f44336, #e53935);
+}
+
+/* সিলেবাস টগল */
+.syllabus-toggle {
+    width: 100%;
+    padding: 10px;
+    border: 2px dashed var(--primary);
+    color: var(--primary);
+    background: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.syllabus-toggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0,137,123,0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.syllabus-toggle:hover::before {
+    opacity: 1;
+}
+
+.syllabus-toggle:hover {
+    border-style: solid;
+    transform: translateY(-2px);
+}
+
+.syllabus-content {
+    display: none;
+    margin-top: 15px;
+    padding: 15px;
+    background: var(--bg-body);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.syllabus-content.show {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+.chapter-box {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.chapter-box:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.chapter-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--primary);
+    margin-bottom: 8px;
+    padding-left: 8px;
+    border-left: 3px solid var(--primary);
+}
+
+.topic-list {
+    list-style: none;
+    padding-left: 12px;
+}
+
+.topic-list li {
+    font-size: 0.85rem;
+    color: var(--text-main);
+    position: relative;
+    padding-left: 15px;
+    margin-bottom: 5px;
+    line-height: 1.4;
+}
+
+.topic-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 1rem;
+}
+
+/* নোটিশ */
+.notice-grid {
+    display: grid;
+    gap: 15px;
+}
+
+.notice-link {
+    text-decoration: none;
+    display: block;
+}
+
+.notice-card {
+    background: var(--bg-card);
+    padding: 15px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--accent);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.notice-card:hover {
+    transform: translateX(5px);
+    background: linear-gradient(90deg, rgba(229,57,53,0.05) 0%, rgba(229,57,53,0) 100%);
+}
+
+.n-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-main);
+    display: block;
+    margin-bottom: 6px;
+}
+
+.n-date {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: block;
+}
+
+.n-icon {
+    font-size: 1.2rem;
+    color: var(--primary);
+}
+
+/* পরীক্ষার রুটিন টেবিল */
+.routine-table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin: 25px 0;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    background: var(--bg-card);
+}
+
+.routine-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.routine-table thead {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+}
+
+.routine-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    border: none;
+}
+
+.routine-table tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.2s;
+}
+
+.routine-table tbody tr:hover {
+    background: rgba(0,137,123,0.05);
+}
+
+.routine-table td {
+    padding: 14px 15px;
+    vertical-align: middle;
+}
+
+.routine-table tbody tr:nth-child(even) {
+    background: rgba(0,0,0,0.02);
+}
+
+.routine-table .subject-type {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.routine-table .type-major {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.routine-table .type-nonmajor {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.routine-table .exam-status {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.routine-table .status-completed {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--completed);
+}
+
+.routine-table .status-upcoming {
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--upcoming);
+}
+
+.routine-table .status-today {
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+}
+
+/* পরীক্ষার সিলেবাস টেবিল */
+.syllabus-table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin: 25px 0;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    background: var(--bg-card);
+}
+
+.syllabus-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.syllabus-table thead {
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    color: white;
+}
+
+.syllabus-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    border: none;
+}
+
+.syllabus-table tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.2s;
+}
+
+.syllabus-table tbody tr:hover {
+    background: rgba(76, 175, 80, 0.05);
+}
+
+.syllabus-table td {
+    padding: 14px 15px;
+    vertical-align: top;
+}
+
+.syllabus-table .syllabus-chapter {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 8px;
+    display: block;
+}
+
+.syllabus-table .syllabus-topic {
+    font-size: 0.85rem;
+    color: var(--text-main);
+    margin-bottom: 4px;
+    display: block;
+    padding-left: 15px;
+    position: relative;
+}
+
+.syllabus-table .syllabus-topic::before {
+    content: '•';
+    position: absolute;
+    left: 5px;
+    color: var(--accent);
+}
+
+/* গ্যালারি - ৬টি ছবি */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.gallery-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    background: #eee;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: scale(1.05);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.4s;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.g-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: white;
+    padding: 12px 8px 8px;
+    text-align: center;
+    transform: translateY(100%);
+    transition: 0.3s;
+}
+
+.gallery-item:hover .g-overlay {
+    transform: translateY(0);
+}
+
+.g-btn {
+    background: white;
+    color: black;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 6px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* স্ক্রল বাটন */
+#scrollTopBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 5px 15px rgba(229, 57, 53, 0.4);
+    cursor: pointer;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    z-index: 900;
+    transition: all 0.3s ease;
+}
+
+#scrollTopBtn:hover {
+    transform: translateY(-3px);
+}
+
+/* ফুটার */
+footer {
+    background: #0f172a;
+    color: white;
+    padding: 40px 15px;
+    text-align: center;
+    margin-top: 60px;
+}
+
+.footer-logo {
+    width: 50px;
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+.dev-info {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #334155;
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.dev-info a {
+    color: var(--secondary);
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* মোডাল */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.95);
+    z-index: 5000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.modal.active {
+    display: flex;
+    animation: fadeIn 0.3s;
+}
+
+.modal img {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.1);
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    color: white;
+    font-size: 2.5rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.modal-close:hover {
+    color: var(--accent);
+}
+
+.modal-download {
+    margin-top: 20px;
+    background: white;
+    color: black;
+    padding: 10px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.modal-download:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+}
+
+/* হিডেন টেবিল */
+#hidden-syllabus-table,
+#hidden-routine-table {
+    position: fixed;
+    top: -10000px;
+    left: -10000px;
+    width: 900px;
+    background: white;
+    color: black;
+    padding: 40px;
+    font-family: 'Noto Sans Bengali', sans-serif;
+}
+
+.syllabus-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 13px;
+}
+
+.syllabus-table th {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.syllabus-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    vertical-align: top;
+}
+
+.syllabus-table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+/* অ্যানিমেশন */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* মোবাইল রেসপন্সিভ */
+@media (max-width: 768px) {
+    body {
+        padding-top: 50px;
+    }
+    
+    .news-ticker {
+        height: 45px;
+        padding: 0 5px;
+    }
+    
+    .ticker-label {
+        min-width: 100px;
+        padding: 0 10px;
+        font-size: 0.8rem;
+    }
+    
+    .ticker-text {
+        font-size: 0.8rem;
+    }
+    
+    header {
+        top: 45px;
+        padding: 10px 0;
+    }
+    
+    .brand-logo {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .college-name {
+        font-size: 0.95rem;
+    }
+    
+    .department {
+        font-size: 0.85rem;
+    }
+    
+    .batch-info {
+        font-size: 0.75rem;
+    }
+    
+    .header-actions button {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .countdown-title {
+        font-size: 1.2rem;
+    }
+    
+    .countdown-subject {
+        font-size: 1rem;
+    }
+    
+    .timer-unit {
+        min-width: 60px;
+        padding: 8px;
+    }
+    
+    .timer-value {
+        font-size: 1.5rem;
+    }
+    
+    .stats-container {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 10px;
+    }
+    
+    .stat-card {
+        min-width: 100px;
+        flex-shrink: 0;
+    }
+    
+    .stat-val {
+        font-size: 1.5rem;
+    }
+    
+    .filter-buttons {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+    
+    .filter-btn {
+        min-width: 120px;
+        font-size: 0.85rem;
+        padding: 8px 15px;
+    }
+    
+    .exams-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .exam-card {
+        min-height: 320px;
+    }
+    
+    .exam-card.completed::after {
+        font-size: 0.7rem;
+        padding: 5px 30px;
+        right: -32px;
+    }
+    
+    .exam-info-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .meta-info-bar {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+    }
+    
+    .download-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .dl-btn {
+        width: 100%;
+        max-width: 300px;
+        min-width: auto;
+        font-size: 0.9rem;
+        padding: 10px 20px;
+    }
+    
+    .routine-table-container,
+    .syllabus-table-container {
+        overflow-x: scroll;
+    }
+    
+    .routine-table,
+    .syllabus-table {
+        min-width: 700px;
+        font-size: 0.9rem;
+    }
+    
+    .routine-table th,
+    .routine-table td,
+    .syllabus-table th,
+    .syllabus-table td {
+        padding: 10px;
+    }
+    
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .sidebar {
+        width: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-buttons {
+        gap: 8px;
+    }
+    
+    .filter-btn {
+        min-width: 110px;
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .stats-container {
+        gap: 8px;
+    }
+    
+    .stat-card {
+        min-width: 90px;
+        padding: 12px 8px;
+    }
+    
+    .stat-val {
+        font-size: 1.3rem;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem;
+    }
+    
+    .timer-unit {
+        min-width: 55px;
+        padding: 6px;
+    }
+    
+    .timer-value {
+        font-size: 1.3rem;
+    }
+    
+    .subject-title {
+        font-size: 1.05rem;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+    }
+    
+    .meta-info-bar {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+    }
+    
+    .meta-value {
+        font-size: 0.8rem;
+    }
 }
 </style>
-    <style>
-        :root {
-            --primary: #00897b;       /* Teal Green */
-            --primary-dark: #004d40;
-            --secondary: #00acc1;
-            --accent: #e53935;        /* Red for alerts */
-            --bg-body: #f4f6f8;
-            --bg-card: #ffffff;
-            --text-main: #1f2937;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --radius: 16px;
-        }
-
-        body.dark-mode {
-            --bg-body: #0f172a;
-            --bg-card: #1e293b;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-            --primary: #2dd4bf;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Poppins', 'Hind Siliguri', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            transition: 0.3s;
-            padding-top: 40px; /* For Ticker */
-            scroll-behavior: smooth;
-        }
-
-        /* --- ১. নিউজ টিকার (Marquee) --- */
-        .news-ticker {
-            position: fixed; top: 0; left: 0; width: 100%; height: 40px;
-            background: #111827; color: #fff;
-            display: flex; align-items: center; z-index: 2000;
-            border-bottom: 2px solid var(--accent);
-        }
-        .ticker-label {
-            background: var(--accent); padding: 0 20px; height: 100%;
-            display: flex; align-items: center; font-weight: 700; font-size: 0.85rem;
-            white-space: nowrap; z-index: 2; text-transform: uppercase;
-        }
-        .ticker-text {
-            display: inline-block; white-space: nowrap;
-            padding-left: 100%; animation: marquee 20s linear infinite;
-        }
-        .ticker-text span { margin-right: 50px; font-size: 0.9rem; }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-
-        /* --- ২. হেডার --- */
-        header {
-            background: var(--bg-card);
-            box-shadow: var(--shadow);
-            padding: 15px 0;
-            position: sticky; top: 40px; z-index: 1000;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .header-inner {
-            max-width: 1200px; margin: 0 auto; padding: 0 20px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .brand { display: flex; align-items: center; gap: 15px; }
-        .brand-logo { 
-            width: 60px; height: 60px; object-fit: contain; 
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-        }
-        .brand-info h1 { font-size: 1.1rem; font-weight: 700; color: var(--primary); line-height: 1.2; margin-bottom: 2px; }
-        .brand-info p { font-size: 0.85rem; font-weight: 500; color: var(--text-main); }
-        .brand-info span { font-size: 0.75rem; color: var(--text-muted); background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; }
-
-        .header-actions button {
-            background: transparent; border: 1px solid var(--border-color);
-            width: 40px; height: 40px; border-radius: 50%;
-            color: var(--text-main); font-size: 1.1rem; cursor: pointer;
-            transition: 0.2s; margin-left: 8px;
-        }
-        .header-actions button:hover { background: var(--primary); color: white; border-color: var(--primary); }
-
-        /* --- ৩. সাইড মেনু --- */
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 2900; display: none;
-            backdrop-filter: blur(3px);
-        }
-        .overlay.active { display: block; }
-
-        .sidebar {
-            position: fixed; top: 0; right: -280px; width: 280px; height: 100vh;
-            background: var(--bg-card); z-index: 3000;
-            box-shadow: -5px 0 25px rgba(0,0,0,0.2);
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex; flex-direction: column;
-        }
-        .sidebar.active { right: 0; }
-        
-        .sidebar-header {
-            padding: 20px; background: var(--primary); color: white;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .menu-list { padding: 10px; overflow-y: auto; }
-        .menu-list a {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 15px; color: var(--text-main); text-decoration: none;
-            border-radius: 8px; margin-bottom: 5px; font-weight: 500;
-            transition: 0.2s; border-left: 4px solid transparent;
-        }
-        .menu-list a:hover { background: rgba(0,137,123,0.08); border-left-color: var(--primary); color: var(--primary); }
-
-        /* --- ৪. মেইন কন্টেইনার --- */
-        .container { max-width: 1200px; margin: 0 auto; padding: 25px 20px; }
-
-        /* স্ট্যাটস */
-        .stats-container {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px;
-        }
-        .stat-card {
-            background: var(--bg-card); padding: 15px; border-radius: var(--radius);
-            box-shadow: var(--shadow); text-align: center; border-bottom: 4px solid transparent;
-        }
-        .stat-val { font-size: 1.8rem; font-weight: 700; display: block; line-height: 1.2; }
-        .stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-
-        /* সার্চ বার (Restored) */
-        .search-area { position: relative; margin-bottom: 25px; }
-        .search-input {
-            width: 100%; padding: 15px 50px 15px 20px; border-radius: 50px;
-            border: 2px solid transparent; background: var(--bg-card);
-            box-shadow: var(--shadow); font-size: 1rem; color: var(--text-main);
-            outline: none; transition: 0.3s;
-        }
-        .search-input:focus { border-color: var(--primary); }
-        .search-btn {
-            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-            background: var(--primary); color: white; border: none;
-            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
-        }
-
-        /* ডাউনলোড বাটন */
-        .dl-routine-btn {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white; border: none; padding: 12px 30px; border-radius: 50px;
-            font-size: 1rem; font-weight: 600; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.3);
-            display: flex; align-items: center; gap: 10px; margin: 0 auto 35px;
-            transition: transform 0.2s;
-        }
-        .dl-routine-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(42, 82, 152, 0.4); }
-
-        /* --- ৫. এক্সাম কার্ড ডিজাইন (Updated) --- */
-        .section-title {
-            font-size: 1.3rem; font-weight: 700; margin: 40px 0 20px;
-            padding-left: 15px; border-left: 5px solid var(--primary);
-            display: flex; align-items: center; gap: 10px;
-        }
-
-        .exams-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 25px;
-        }
-        
-        .exam-card {
-            background: var(--bg-card); border-radius: var(--radius);
-            box-shadow: var(--shadow); overflow: hidden;
-            display: flex; flex-direction: column;
-            border: 1px solid var(--border-color);
-            transition: 0.3s; position: relative;
-        }
-        .exam-card:hover { transform: translateY(-7px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-
-        /* কার্ড হেডার */
-        .ec-header {
-            padding: 15px 20px; background: rgba(0,137,123,0.05);
-            border-bottom: 1px solid var(--border-color);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        /* বারকোড ফন্ট */
-        .code-barcode {
-            font-family: 'Libre Barcode 39 Text', cursive;
-            font-size: 1.8rem; color: var(--text-main); line-height: 1; transform: scaleY(1.5);
-        }
-        .type-badge {
-            font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase;
-        }
-        .bg-major { background: #e8f5e9; color: #2e7d32; }
-        .bg-non { background: #e3f2fd; color: #1565c0; }
-
-        /* কার্ড বডি */
-        .ec-body { padding: 20px; flex-grow: 1; }
-        .ec-subject { font-size: 1.25rem; font-weight: 700; margin-bottom: 15px; line-height: 1.3; color: var(--text-main); }
-        
-        .ec-meta {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;
-        }
-        .meta-item {
-            font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;
-        }
-        .meta-item i { color: var(--primary); }
-
-        /* কাউন্টডাউন বক্স */
-        .ec-timer {
-            background: var(--bg-body); padding: 10px; border-radius: 8px;
-            text-align: center; margin-bottom: 15px; border-left: 4px solid #ccc;
-        }
-        .timer-val { font-weight: 700; font-size: 0.95rem; }
-
-        /* সিলেবাস & টপিক (Restored) */
-        .syllabus-toggle {
-            width: 100%; padding: 10px; border: 1px dashed var(--primary);
-            color: var(--primary); background: none; border-radius: 8px;
-            font-weight: 600; cursor: pointer; transition: 0.2s;
-            display: flex; justify-content: center; align-items: center; gap: 8px;
-        }
-        .syllabus-toggle:hover { background: rgba(0,137,123,0.05); }
-
-        .syllabus-content {
-            display: none; margin-top: 15px; padding: 15px; background: var(--bg-body); border-radius: 8px;
-        }
-        .syllabus-content.show { display: block; animation: fadeIn 0.3s; }
-        
-        .chapter-box { margin-bottom: 10px; }
-        .chapter-title { font-weight: 700; font-size: 0.9rem; color: var(--text-main); margin-bottom: 4px; }
-        .topic-list { list-style: none; padding-left: 10px; border-left: 2px solid var(--border-color); }
-        .topic-list li { font-size: 0.85rem; color: var(--text-muted); position: relative; padding-left: 10px; margin-bottom: 2px; }
-        .topic-list li::before { content: "-"; position: absolute; left: 0; color: var(--accent); }
-
-        /* --- ৬. নোটিশ & গ্যালারি --- */
-        .notice-grid { display: grid; gap: 15px; }
-        .notice-link { text-decoration: none; display: block; }
-        
-        .notice-card {
-            background: var(--bg-card); padding: 20px; border-radius: var(--radius);
-            box-shadow: var(--shadow); border-left: 5px solid var(--accent);
-            display: flex; justify-content: space-between; align-items: center;
-            transition: 0.2s;
-        }
-        .notice-card:hover { transform: translateX(5px); background: #fff8f8; }
-        .n-title { font-weight: 700; font-size: 1.05rem; color: var(--text-main); display: block; }
-        .n-date { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; display: block; }
-        .n-icon { font-size: 1.2rem; color: var(--primary); }
-
-        /* গ্যালারি (Grid + Hover) */
-        .gallery-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px;
-        }
-        .gallery-item {
-            position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden;
-            cursor: pointer; box-shadow: var(--shadow); background: #eee;
-        }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
-        .gallery-item:hover img { transform: scale(1.1); }
-        .g-overlay {
-            position: absolute; bottom: 0; left: 0; width: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            color: white; padding: 15px 10px 10px; text-align: center;
-            transform: translateY(100%); transition: 0.3s;
-        }
-        .gallery-item:hover .g-overlay { transform: translateY(0); }
-        .g-btn {
-            background: white; color: black; border: none; padding: 5px 12px;
-            border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-top: 5px; display: inline-block;
-        }
-
-        /* --- ৭. এক্সট্রা --- */
-        /* স্ক্রল টু টপ */
-        #scrollTopBtn {
-            position: fixed; bottom: 30px; right: 30px;
-            width: 50px; height: 50px; background: var(--accent); color: white;
-            border: none; border-radius: 50%; box-shadow: 0 5px 15px rgba(229, 57, 53, 0.4);
-            cursor: pointer; display: none; justify-content: center; align-items: center; font-size: 1.2rem;
-            z-index: 900; transition: 0.3s;
-        }
-        #scrollTopBtn:hover { transform: translateY(-5px); }
-
-        /* ফুটার */
-        footer {
-            background: #0f172a; color: white; padding: 40px 20px;
-            text-align: center; margin-top: 60px;
-        }
-        .footer-logo { width: 50px; margin-bottom: 10px; opacity: 0.8; }
-        .dev-info { margin-top: 20px; padding-top: 20px; border-top: 1px solid #334155; color: #94a3b8; font-size: 0.9rem; }
-        .dev-info a { color: var(--secondary); text-decoration: none; }
-
-        /* মোডাল */
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 5000; display: none;
-            justify-content: center; align-items: center; flex-direction: column;
-        }
-        .modal.active { display: flex; animation: fadeIn 0.3s; }
-        .modal img { max-width: 90%; max-height: 80vh; border-radius: 8px; box-shadow: 0 0 20px rgba(255,255,255,0.1); }
-        .modal-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 2.5rem; cursor: pointer; }
-        .modal-download {
-            margin-top: 20px; background: white; color: black; padding: 10px 25px;
-            border-radius: 50px; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 8px;
-        }
-
-        /* হিডেন রুটিন টেবিল (ইমেজ জেনারেশনের জন্য) */
-        #hidden-routine-table {
-            position: fixed; top: -10000px; left: -10000px;
-            width: 800px; background: white; color: black; padding: 40px;
-            font-family: 'Poppins', sans-serif;
-        }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #000; padding: 10px; text-align: left; font-size: 14px; }
-        th { background: #f0f0f0; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* মোবাইল */
-        @media (max-width: 768px) {
-            .header-inner { padding: 0 15px; }
-            .college-name { font-size: 1rem; }
-            .brand-logo { width: 50px; height: 50px; }
-            .exams-grid { grid-template-columns: 1fr; }
-            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-    </style>
 </head>
 <body>
 
-    <!-- ১. নিউজ টিকার -->
-    <div class="news-ticker">
-        <div class="ticker-label">NOTICE BOARD</div>
-        <div class="ticker-text" id="marqueeText"></div>
-    </div>
-
-    <!-- ২. হেডার -->
-    <header>
-        <div class="header-inner">
-            <div class="brand">
-                <img src="https://i.imgur.com/nIOAmb3.png" alt="Batch Logo" class="brand-logo">
-                <div class="brand-info">
-                    <h1>Govt. Azizul Haque College</h1>
-                    <p>Department of Physics | 1st Year</p>
-                    <span>Session: 2024-25</span>
-                </div>
-            </div>
-            <div class="header-actions">
-                <button onclick="toggleTheme()" title="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
-                <button onclick="toggleMenu()" title="Open Menu"><i class="fas fa-bars"></i></button>
-            </div>
-        </div>
-    </header>
-
-    <!-- ৩. সাইড মেনু -->
-    <div class="overlay" onclick="toggleMenu()"></div>
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h3>Menu</h3>
-            <i class="fas fa-times" onclick="toggleMenu()" style="cursor:pointer; font-size:1.5rem;"></i>
-        </div>
-        <div class="menu-list">
-            <a href="#"><i class="fas fa-home"></i> Home</a>
-
-            <a href="https://m.me/j/Aba0w-Wy7tinFqyp/"><i class="fab fa-facebook-messenger"></i> Messenger Group</a>
-            <a href="https://www.facebook.com/share/1MWjp3pfHL/"><i class="fab fa-facebook"></i> Facebook Page</a>
-            <a href="#notices"><i class="fas fa-bell"></i> Important Notices</a>
-            <a href="#gallery"><i class="fas fa-images"></i> Picture Gallery</a>
+<!-- নিউজ টিকার -->
+<div class="news-ticker">
+    <div class="ticker-label">নোটিশ বোর্ড</div>
+    <div class="ticker-content">
+        <div class="ticker-text" id="marqueeText">
+            <!-- ডাইনামিকভাবে লোড হবে -->
         </div>
     </div>
-
-    <!-- ৪. মেইন কন্টেন্ট -->
-    <div class="container">
-
-        <!-- স্ট্যাটস -->
-        <div class="stats-container">
-            <div class="stat-card" style="border-bottom-color: var(--primary);">
-                <span class="stat-val" id="totalCount">0</span>
-                <span class="stat-label">Total Subjects</span>
-            </div>
-            <div class="stat-card" style="border-bottom-color: #2e7d32;">
-                <span class="stat-val" id="majorCount" style="color:#2e7d32">0</span>
-                <span class="stat-label">Major</span>
-            </div>
-            <div class="stat-card" style="border-bottom-color: #1565c0;">
-                <span class="stat-val" id="nonMajorCount" style="color:#1565c0">0</span>
-                <span class="stat-label">Non-Major</span>
-            </div>
-        </div>
-
-        <!-- রুটিন ডাউনলোড বাটন -->
-        <button class="dl-routine-btn" onclick="downloadRoutineImage()">
-            <i class="fas fa-cloud-download-alt"></i> Download Routine (Image)
-        </button>
-
-        <!-- সার্চ বার (Restored) -->
-        <div class="search-area">
-            <input type="text" id="searchInput" class="search-input" placeholder="Search by Subject Name, Code or Date...">
-            <button class="search-btn"><i class="fas fa-search"></i></button>
-        </div>
-
-        <!-- ৫. এক্সাম লিস্ট -->
-        <div class="section-title"><i class="fas fa-calendar-alt"></i> Exam Schedule & Syllabus</div>
-        <div class="exams-grid" id="examContainer">
-            <!-- Cards will be injected here -->
-        </div>
-
-        <!-- ৬. নোটিশ সেকশন (Links Restored) -->
-        <div class="section-title"><i class="fas fa-bullhorn"></i> Important Notices</div>
-        <div class="notice-grid" id="notices">
-            <!-- Notice 1 -->
-            <a href="https://www.nu.ac.bd/uploads/notices/notice_6100_pub_date_08012026.pdf" class="notice-link">
-                <div class="notice-card">
-                    <div>
-                        <span class="n-title">জাতীয় বিশ্ববিদ্যালয়ের ইনকোর্স পরীক্ষা নেওয়ার নোটিশ</span>
-                        <span class="n-date">08 Jan 2026</span>
-                    </div>
-                    <i class="fas fa-chevron-right n-icon"></i>
-                </div>
-            </a>
-            <!-- Notice 2 -->
-            <a href="https://s3.amaarcloudbd.com/aalo/govtazizulhaquecollege/file/notice/general_notice/c7b7b3484dde77db5abb5bb2416d71b1.pdf?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=fc08c574e6fa4232TOBO%2F20260113%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260113T120139Z&X-Amz-SignedHeaders=host&X-Amz-Expires=900&X-Amz-Signature=131975584d8a1e546537bf89b1076ad40206ec2b16b4138c2a24bfcb4f091eaa" class="notice-link">
-                <div class="notice-card" style="border-left-color: #00acc1;">
-                    <div>
-                        <span class="n-title">পাঠদান কার্যক্রম স্থগিত সংক্রান্ত নোটিশ</span>
-                        <span class="n-date">06 Jan 2026</span>
-                    </div>
-                    <i class="fas fa-chevron-right n-icon"></i>
-                </div>
-            </a>
-        </div>
-
-        <!-- ৭. গ্যালারি সেকশন (Enhanced) -->
-        <div class="section-title"><i class="fas fa-images"></i> Download Zone</div>
-        <div class="gallery-grid" id="gallery">
-            <div class="gallery-item" onclick="openModal('https://i.imgur.com/RKhpRxw.png')">
-                <img src="https://i.imgur.com/RKhpRxw.png" alt="Routine">
-                <div class="g-overlay">
-                    <span>Full Routine</span><br>
-                    <span class="g-btn"><i class="fas fa-download"></i> View</span>
-                </div>
-            </div>
-            <div class="gallery-item" onclick="openModal('https://i.imgur.com/Ygnpink.png')">
-                <img src="https://i.imgur.com/Ygnpink.png" alt="Syllabus">
-                <div class="g-overlay">
-                    <span>Full Syllabus</span><br>
-                    <span class="g-btn"><i class="fas fa-download"></i> View</span>
-                </div>
-            </div>
-            <div class="gallery-item" onclick="openModal('https://i.imgur.com/QM0W5Qe.png')">
-                <img src="https://i.imgur.com/QM0W5Qe.png" alt="Seat Plan">
-                <div class="g-overlay">
-                    <span>Syllabus</span><br>
-                    <span class="g-btn"><i class="fas fa-download"></i> View</span>
-                </div>
-            </div>
-                        <div class="gallery-item" onclick="openModal('https://i.imgur.com/GqbB1mE.png')">
-                <img src="https://i.imgur.com/GqbB1mE.png" alt="Notice">
-                <div class="g-overlay">
-                    <span>Syllabus</span><br>
-                    <span class="g-btn"><i class="fas fa-download"></i> View</span>
-                </div>
-            </div>
-                        <div class="gallery-item" onclick="openModal('https://i.imgur.com/GqbB1mE.png')">
-                                      <div class="gallery-item" onclick="openModal('https://i.imgur.com/1kewbZB.png')">
-                <img src="https://i.imgur.com/1kewbZB.png" alt="Seat Plan">
-                <div class="g-overlay">
-                    <span>Book List</span><br>
-                    <span class="g-btn"><i class="fas fa-download"></i> View</span>
-                </div>
-            </div>
-                <img src="https://i.imgur.com/GqbB1mE.png" alt="Seat Plan">
-                <div class="g-overlay">
-                    <span>Syllabus</span><br>
-                    <span class="g-btn"><i class="fas fa-download"></i> View</span>
-                </div>
-            </div>
-            <div class="gallery-item" onclick="openModal('https://i.imgur.com/X0BuPZU.jpeg')">
-                <img src="https://i.imgur.com/X0BuPZU.jpeg" alt="Notice">
-                <div class="g-overlay">
-                    <span>Official Notice</span><br>
-                    <span class="g-btn"><i class="fas fa-download"></i> View</span>
-                </div>
-            </div>
-        </div>
-
-    </div>
-    
-    <!-- HTML for the popup -->
-<div class="sharifulinfo-modal" id="sharifulinfoModal">
-  <div class="sharifulinfo-modal-content">
-    <div class="sharifulinfo-modal-inner">
-      <span class="sharifulinfo-close">&times;</span>
-      
-      <div class="sharifulinfo-header">
-        <div class="sharifulinfo-image-container">
-          <img src="https://i.imgur.com/mm2jLrd.png" alt="MD SHARIFUL ISLAM" class="sharifulinfo-image">
-          <div class="sharifulinfo-image-overlay"></div>
-        </div>
-        <h2 class="sharifulinfo-name">MD SHARIFUL ISLAM</h2>
-        <p class="sharifulinfo-department">DEPARTMENT OF PHYSICS</p>
-        <p class="sharifulinfo-session">SESSION: 24-25</p>
-        <div class="sharifulinfo-profession-container">
-          <p class="sharifulinfo-profession">Professional Web Designer & Developer</p>
-        </div>
-      </div>
-      
-      <div class="sharifulinfo-social">
-        <a href="https://www.facebook.com/share/1G1KQHWXH9/" target="_blank" class="sharifulinfo-social-link">
-          <i class="fab fa-facebook-f"></i>
-          <span>Facebook</span>
-        </a>
-        <a href="https://m.me/msharifulvisionary" target="_blank" class="sharifulinfo-social-link">
-          <i class="fab fa-facebook-messenger"></i>
-          <span>Messenger</span>
-        </a>
-        <a href="https://wa.me/8801735757143" target="_blank" class="sharifulinfo-social-link">
-          <i class="fab fa-whatsapp"></i>
-          <span>WhatsApp</span>
-        </a>
-        <a href="mailto:msharifulvisionary@gmail.com" class="sharifulinfo-social-link">
-          <i class="fas fa-envelope"></i>
-          <span>Email</span>
-        </a>
-      </div>
-    </div>
-  </div>
 </div>
 
-
-    <!-- স্ক্রল টু টপ বাটন (Restored) -->
-    <button id="scrollTopBtn" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <!-- ফুটার -->
-    <footer>
-        <img src="https://i.imgur.com/HZjXngF.png" alt="Logo" class="footer-logo">
-        <h3>Govt. Azizul Haque College, Bogura</h3>
-        <p>Department of Physics | Auroras 25 Batch</p>
-        <div class="dev-info">
-            &copy; 2026 Auroras 25 | Developed by </br> <a href="javascript:void(0);" class="designer-link">MD SHARIFUL ISLAM</a>
+<!-- হেডার -->
+<header>
+    <div class="header-inner">
+        <div class="brand">
+            <img src="https://i.imgur.com/nIOAmb3.png" alt="কলেজ লোগো" class="brand-logo">
+            <div class="brand-info">
+                <h1 class="college-name">সরকারি আজিজুল হক কলেজ</h1>
+                <p class="department">পদার্থবিজ্ঞান বিভাগ</p>
+                <div class="batch-info">AURORAS 25 BATCH | শিক্ষা বর্ষ ২০২৪-২৫</div>
+                <span class="session-badge">১ম ইন-কোর্স পরীক্ষা</span>
+            </div>
         </div>
-    </footer>
+        <div class="header-actions">
+            <button onclick="toggleMenu()" title="মেনু"><i class="fas fa-bars"></i></button>
+            <button onclick="toggleTheme()" title="ডার্ক মোড"><i class="fas fa-moon"></i></button>
+        </div>
+    </div>
+</header>
 
-<!-- ইমেজ মোডাল -->
+<!-- সাইডবার মেনু -->
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h3>মেনু</h3>
+        <button onclick="toggleMenu()" style="background:none; border:none; color:var(--primary); font-size:1.5rem; cursor:pointer;">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="menu-list">
+        <a href="javascript:void(0);" onclick="filterExams('all'); toggleMenu(); scrollToSection('exams')">
+            <i class="fas fa-home"></i> হোম
+        </a>
+        <a href="javascript:void(0);" onclick="toggleMenu(); scrollToSection('routine')">
+            <i class="fas fa-calendar-alt"></i> পরীক্ষার রুটিন
+        </a>
+        <a href="javascript:void(0);" onclick="toggleMenu(); scrollToSection('syllabus-table')">
+            <i class="fas fa-book"></i> পরীক্ষার সিলেবাস
+        </a>
+        <a href="javascript:void(0);" onclick="toggleMenu(); scrollToSection('notices')">
+            <i class="fas fa-bell"></i> গুরুত্বপূর্ণ নোটিশ
+        </a>
+        <a href="javascript:void(0);" onclick="toggleMenu(); scrollToSection('gallery')">
+            <i class="fas fa-images"></i> ডাউনলোড জোন
+        </a>
+        <a href="https://www.facebook.com/share/1MWjp3pfHL/" target="_blank" onclick="toggleMenu();">
+            <i class="fab fa-facebook"></i> ফেসবুক পেজ
+        </a>
+        <a href="https://m.me/j/Aba0w-Wy7tinFqyp/" target="_blank" onclick="toggleMenu();">
+            <i class="fab fa-facebook-messenger"></i> মেসেঞ্জার গ্রুপ
+        </a>
+        <a href="javascript:void(0);" onclick="openDeveloperInfo(); toggleMenu();">
+            <i class="fas fa-code"></i> ডেভেলপার
+        </a>
+    </div>
+</div>
+
+<!-- কাউন্টডাউন ব্যানার -->
+<div class="countdown-banner" id="countdownBanner">
+    <div class="countdown-content">
+        <h2 class="countdown-title" id="nextExamTitle">পরবর্তী পরীক্ষা</h2>
+        <div class="countdown-subject" id="nextExamSubject">লোড হচ্ছে...</div>
+        <div class="countdown-timer">
+            <div class="timer-unit">
+                <div class="timer-value" id="days">00</div>
+                <div class="timer-label">দিন</div>
+            </div>
+            <div class="timer-unit">
+                <div class="timer-value" id="hours">00</div>
+                <div class="timer-label">ঘন্টা</div>
+            </div>
+            <div class="timer-unit">
+                <div class="timer-value" id="minutes">00</div>
+                <div class="timer-label">মিনিট</div>
+            </div>
+            <div class="timer-unit">
+                <div class="timer-value" id="seconds">00</div>
+                <div class="timer-label">সেকেন্ড</div>
+            </div>
+        </div>
+        <div style="margin-top: 12px; font-size: 1rem;">
+            তারিখ: <span id="nextExamDate">-</span> | সময়: <span id="nextExamTime">-</span> | রুম: <span id="nextExamRoom">-</span>
+        </div>
+    </div>
+</div>
+
+<!-- মেইন কন্টেন্ট -->
+<div class="container">
+    <!-- সার্চ বার -->
+    <div class="search-area">
+        <input type="text" id="searchInput" class="search-input" placeholder="বিষয়ের নাম, কোড বা তারিখ দিয়ে সার্চ করুন...">
+        <button class="search-btn"><i class="fas fa-search"></i></button>
+    </div>
+
+    <!-- ডাউনলোড বাটন -->
+    <div class="download-buttons">
+        <button class="dl-btn" onclick="downloadRoutineImage()">
+            <i class="fas fa-calendar-alt"></i> রুটিন ডাউনলোড
+        </button>
+        <button class="dl-btn dl-syllabus" onclick="downloadSyllabusImage()">
+            <i class="fas fa-book"></i> সিলেবাস ডাউনলোড
+        </button>
+    </div>
+
+    <!-- ফিল্টার বাটন -->
+    <div class="filter-buttons">
+        <button class="filter-btn filter-all active" onclick="filterExams('all')">
+            <i class="fas fa-list"></i> সকল বিষয়
+        </button>
+        <button class="filter-btn filter-major" onclick="filterExams('major')">
+            <i class="fas fa-star"></i> মেজর বিষয়
+        </button>
+        <button class="filter-btn filter-nonmajor" onclick="filterExams('nonmajor')">
+            <i class="fas fa-book"></i> নন-মেজর
+        </button>
+    </div>
+
+    <!-- স্ট্যাটস -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <span class="stat-val" id="totalCount">0</span>
+            <span class="stat-label">মোট বিষয়</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-val" id="majorCount">0</span>
+            <span class="stat-label">মেজর</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-val" id="nonMajorCount">0</span>
+            <span class="stat-label">নন-মেজর</span>
+        </div>
+    </div>
+
+    <!-- এক্সাম লিস্ট -->
+    <div class="section-title" id="exams"><i class="fas fa-calendar-alt"></i> পরীক্ষার সময়সূচী</div>
+    <div class="exams-grid" id="examContainer">
+        <!-- কার্ডগুলি এখানে ইনজেক্ট হবে -->
+    </div>
+    
+    <!-- সবগুলো দেখুন বাটন -->
+    <div class="show-all-container" id="showAllContainer">
+        <button class="show-all-btn" id="showAllBtn" onclick="toggleAllExams()">
+            <i class="fas fa-chevron-down"></i> সবগুলো দেখুন
+        </button>
+    </div>
+
+    <!-- পরীক্ষার রুটিন টেবিল -->
+    <div class="section-title" id="routine"><i class="fas fa-table"></i> পরীক্ষার রুটিন</div>
+    <div class="routine-table-container">
+        <table class="routine-table" id="routineTable">
+            <thead>
+                <tr>
+                    <th>তারিখ</th>
+                    <th>বিষয়ের নাম</th>
+                    <th>বিষয় কোড</th>
+                    <th>সময়</th>
+                    <th>ধরন</th>
+                    <th>রুম নং</th>
+                    <th>স্থিতি</th>
+                </tr>
+            </thead>
+            <tbody id="routineTableBody">
+                <!-- ডায়নামিকভাবে লোড হবে -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- পরীক্ষার সিলেবাস টেবিল -->
+    <div class="section-title" id="syllabus-table"><i class="fas fa-book"></i> পরীক্ষার সিলেবাস</div>
+    <div class="syllabus-table-container">
+        <table class="syllabus-table" id="syllabusTable">
+            <thead>
+                <tr>
+                    <th>বিষয়ের নাম</th>
+                    <th>বিষয় কোড</th>
+                    <th>সিলেবাস</th>
+                </tr>
+            </thead>
+            <tbody id="syllabusTableBody">
+                <!-- ডায়নামিকভাবে লোড হবে -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- নোটিশ সেকশন -->
+    <div class="section-title" id="notices"><i class="fas fa-bullhorn"></i> গুরুত্বপূর্ণ নোটিশ</div>
+    <div class="notice-grid">
+        <a href="https://www.nu.ac.bd/uploads/notices/notice_6100_pub_date_08012026.pdf" class="notice-link" target="_blank">
+            <div class="notice-card">
+                <div>
+                    <span class="n-title">জাতীয় বিশ্ববিদ্যালয়ের ইনকোর্স পরীক্ষা নেওয়ার নোটিশ</span>
+                    <span class="n-date">08 জানুয়ারি 2026</span>
+                </div>
+                <i class="fas fa-chevron-right n-icon"></i>
+            </div>
+        </a>
+        <a href="https://s3.amaarcloudbd.com/aalo/govtazizulhaquecollege/file/notice/general_notice/c7b7b3484dde77db5abb5bb2416d71b1.pdf" class="notice-link" target="_blank">
+            <div class="notice-card" style="border-left-color: #00acc1;">
+                <div>
+                    <span class="n-title">পাঠদান কার্যক্রম স্থগিত সংক্রান্ত নোটিশ</span>
+                    <span class="n-date">06 জানুয়ারি 2026</span>
+                </div>
+                <i class="fas fa-chevron-right n-icon"></i>
+            </div>
+        </a>
+    </div>
+
+    <!-- গ্যালারি সেকশন - ৬টি ছবি -->
+    <div class="section-title" id="gallery"><i class="fas fa-images"></i> ডাউনলোড জোন</div>
+    <div class="gallery-grid">
+        <div class="gallery-item" onclick="openModal('https://i.imgur.com/RKhpRxw.png', 'রুটিন')">
+            <img src="https://i.imgur.com/RKhpRxw.png" alt="রুটিন">
+            <div class="g-overlay">
+                <span>সম্পূর্ণ রুটিন</span><br>
+                <span class="g-btn"><i class="fas fa-download"></i> দেখুন</span>
+            </div>
+        </div>
+        <div class="gallery-item" onclick="openModal('https://i.imgur.com/Ygnpink.png', 'সিলেবাস')">
+            <img src="https://i.imgur.com/Ygnpink.png" alt="সিলেবাস">
+            <div class="g-overlay">
+                <span>সম্পূর্ণ সিলেবাস</span><br>
+                <span class="g-btn"><i class="fas fa-download"></i> দেখুন</span>
+            </div>
+        </div>
+        <div class="gallery-item" onclick="openModal('https://i.imgur.com/QM0W5Qe.png', 'সিট প্ল্যান')">
+            <img src="https://i.imgur.com/QM0W5Qe.png" alt="সিট প্ল্যান">
+            <div class="g-overlay">
+                <span>সিট প্ল্যান</span><br>
+                <span class="g-btn"><i class="fas fa-download"></i> দেখুন</span>
+            </div>
+        </div>
+        <div class="gallery-item" onclick="openModal('https://i.imgur.com/1kewbZB.png', 'বুক লিস্ট')">
+            <img src="https://i.imgur.com/1kewbZB.png" alt="বুক লিস্ট">
+            <div class="g-overlay">
+                <span>বুক লিস্ট</span><br>
+                <span class="g-btn"><i class="fas fa-download"></i> দেখুন</span>
+            </div>
+        </div>
+        <div class="gallery-item" onclick="openModal('https://i.imgur.com/GqbB1mE.png', 'নোটিশ')">
+            <img src="https://i.imgur.com/GqbB1mE.png" alt="নোটিশ">
+            <div class="g-overlay">
+                <span>নোটিশ</span><br>
+                <span class="g-btn"><i class="fas fa-download"></i> দেখুন</span>
+            </div>
+        </div>
+        <div class="gallery-item" onclick="openModal('https://i.imgur.com/X0BuPZU.jpeg', 'অফিসিয়াল নোটিশ')">
+            <img src="https://i.imgur.com/X0BuPZU.jpeg" alt="অফিসিয়াল নোটিশ">
+            <div class="g-overlay">
+                <span>অফিসিয়াল নোটিশ</span><br>
+                <span class="g-btn"><i class="fas fa-download"></i> দেখুন</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- মোডাল -->
 <div class="modal" id="imageModal">
     <span class="modal-close" onclick="closeModal()">&times;</span>
     <img src="" id="modalImg">
-    
-    <!-- href এবং download এট্রিবিউট বাদ দেওয়া হয়েছে কারণ আমরা JS দিয়ে কন্ট্রোল করব -->
     <a class="modal-download" id="modalDlLink" style="cursor: pointer;">
-        <i class="fas fa-download"></i> Download Image
+        <i class="fas fa-download"></i> ইমেজ ডাউনলোড করুন
     </a>
 </div>
-    <!-- প্রিন্টেবল রুটিন (লুকানো) -->
-    <div id="hidden-routine-table">
-        <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:15px;">
-            <h2 style="margin:0; color:#00695c;">Govt. Azizul Haque College, Bogura</h2>
-            <h3 style="margin:5px 0;">Department of Physics | Session: 2024-25</h3>
-            <h1 style="margin:10px 0; font-size:28px;">AURORAS 25 BATCH</h1>
-            <span style="background:#eee; padding:5px 15px; border-radius:4px; font-weight:bold;">1st In-Course Exam Routine</span>
-        </div>
-        <table id="printTable">
-            <thead>
-                <tr>
-                    <th>Code</th>
-                    <th>Date & Day</th>
-                    <th>Subject Name</th>
-                    <th>Time</th>
-                </tr>
-            </thead>
-            <tbody id="printTableBody">
-                <!-- JS will fill this -->
-            </tbody>
-        </table>
-        <div style="margin-top:30px; display:flex; justify-content:space-between; font-size:12px;">
-            <span>Generated from Auroras25 Web Portal</span>
-            <span>Developer: Md Shariful Islam</span>
+
+<!-- স্ক্রল টু টপ বাটন -->
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- ফুটার -->
+<footer>
+    <img src="https://i.imgur.com/HZjXngF.png" alt="লোগো" class="footer-logo">
+    <h3>সরকারি আজিজুল হক কলেজ, বগুড়া</h3>
+    <p>পদার্থবিজ্ঞান বিভাগ | অরোরাস ২৫ ব্যাচ</p>
+    <div class="dev-info">
+        &copy; ২০২৬ অরোরাস ২৫ | ডেভেলপ করেছেন <a href="javascript:void(0);" onclick="openDeveloperInfo()">মোঃ শরিফুল ইসলাম</a>
+    </div>
+</footer>
+
+<!-- ডেভেলপার ইনফো মোডাল -->
+<div class="modal" id="developerModal">
+    <div class="modal-close" onclick="closeModal()">&times;</div>
+    <div style="background: white; padding: 25px; border-radius: 15px; max-width: 350px; width: 90%; text-align: center;">
+        <img src="https://i.imgur.com/mm2jLrd.png" alt="MD SHARIFUL ISLAM" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 4px solid var(--primary);">
+        <h2 style="color: #333; margin-bottom: 8px; font-size: 1.3rem;">MD SHARIFUL ISLAM</h2>
+        <p style="color: var(--primary); font-weight: 600; margin-bottom: 5px; font-size: 1rem;">পদার্থবিজ্ঞান বিভাগ</p>
+        <p style="color: #666; margin-bottom: 8px; font-size: 0.9rem;">সেশন: ২০২৪-২৫</p>
+        <p style="background: #f0f8ff; padding: 8px 15px; border-radius: 25px; color: #1a73e8; font-weight: 600; margin-bottom: 20px; font-size: 0.9rem;">
+            প্রফেশনাল ওয়েব ডিজাইনার ও ডেভেলপার
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+            <a href="https://www.facebook.com/share/1G1KQHWXH9/" target="_blank" style="display: flex; flex-direction: column; align-items: center; padding: 10px; border-radius: 8px; background: #f0f2f5; text-decoration: none; color: #333; transition: all 0.3s;">
+                <i class="fab fa-facebook-f" style="font-size: 18px; margin-bottom: 5px; color: #1877f2;"></i>
+                <span style="font-size: 12px;">Facebook</span>
+            </a>
+            <a href="https://m.me/msharifulvisionary" target="_blank" style="display: flex; flex-direction: column; align-items: center; padding: 10px; border-radius: 8px; background: #f0f2f5; text-decoration: none; color: #333; transition: all 0.3s;">
+                <i class="fab fa-facebook-messenger" style="font-size: 18px; margin-bottom: 5px; color: #0084ff;"></i>
+                <span style="font-size: 12px;">Messenger</span>
+            </a>
+            <a href="https://wa.me/8801735757143" target="_blank" style="display: flex; flex-direction: column; align-items: center; padding: 10px; border-radius: 8px; background: #f0f2f5; text-decoration: none; color: #333; transition: all 0.3s;">
+                <i class="fab fa-whatsapp" style="font-size: 18px; margin-bottom: 5px; color: #25d366;"></i>
+                <span style="font-size: 12px;">WhatsApp</span>
+            </a>
+            <a href="mailto:msharifulvisionary@gmail.com" style="display: flex; flex-direction: column; align-items: center; padding: 10px; border-radius: 8px; background: #f0f2f5; text-decoration: none; color: #333; transition: all 0.3s;">
+                <i class="fas fa-envelope" style="font-size: 18px; margin-bottom: 5px; color: #ea4335;"></i>
+                <span style="font-size: 12px;">Email</span>
+            </a>
         </div>
     </div>
+</div>
 
-    <script>
-        // --- ডেটাবেজ (English Data) ---
-        const exams = [
-{
-    subject: "History of Bangladesh : Language, Culture and Identity",
-    code: "219901",
-    date: "2026-01-15",
-    time: "11:00 AM",
-    type: "nonmajor",
-    syllabus: [
-        {
-            title: "অধ্যায় ২ : ঔপনিবেশিক যুগ",
-            topics: [
-                "পলাশীর যুদ্ধ বলতে কী বুঝ?",
-                "দ্বৈতশাসন বলতে কী বুঝ?",
-                "বেঙ্গল রেনেসাঁ বলতে কী বোঝো?",
-                "হিন্দু সমাজের সংস্কারগুলো আলোচনা",
-                "ইস্ট ইন্ডিয়া কোম্পানির দেওয়ানি লাভের পটভূমি",
-                "দেওয়ানি বলতে কী বোঝো?",
-                "নিয়ামক আইন (Regulating Act) বলতে কী বুঝ?"
-            ]
-        }
-    ]
-},
-{
-    subject: "Mechanics",
-    code: "212701",
-    date: "2026-01-18",
-    time: "11:00 AM",
-    type: "major",
-    syllabus: [
-        {
-            title: "অধ্যায় ১: ভেক্টর বীজগণিত",
-            topics: [
-                "গাউস'স ডাইভারজেন্স (Gauss's Divergence) উপপাদ্য",
-                "গ্রিনের উপপাদ্য (Green's Theorem)"
-            ]
-        },
-        {
-            title: "অধ্যায় ৪: দ্বিমাত্রিক ও ত্রিমাত্রিক গতি",
-            topics: []
-        },
-        {
-            title: "অধ্যায় ৫: বল ও গতি",
-            topics: []
-        },
-        {
-            title: "অধ্যায় ৬: কাজ, শক্তি ও ক্ষমতা",
-            topics: []
-        }
-    ]
-},
-{
-    subject: "Properties of Matter, Waves & Oscillations",
-    code: "212703",
-    date: "2026-01-19",
-    time: "11:00 AM",
-    type: "major",
-    syllabus: [
-        {
-            title: "অধ্যায় ১: মহাকর্ষ",
-            topics: []
-        },
-        {
-            title: "অধ্যায় ৫: তরঙ্গ",
-            topics: []
-        },
-        {
-            title: "অধ্যায় ৬: তরঙ্গ ও শব্দ",
-            topics: []
-        }
-    ]
-},
-{
-    subject: "Heat, Thermodynamics & Radiation",
-    code: "212705",
-    date: "2026-01-20",
-    time: "11:00 AM",
-    type: "major",
-    syllabus: [
-        {
-            title: "অধ্যায় ১: তাপ ও তাপমাত্রা",
-            topics: [
-                "স্থির আয়তন হাইড্রোজেন থার্মোমিটার",
-                "স্থির চাপ বায়ু থার্মোমিটার",
-                "প্লাটিনাম-রোধ থার্মোমিটার",
-                "নিম্ন ও উচ্চ তাপমাত্রা পরিমাণ পদ্ধতি"
-            ]
-        },
-        {
-            title: "অধ্যায় ২: গ্যাসের গতিতত্ত্ব",
-            topics: [
-                "গ্যাসের গতিতাত্ত্বর চালের সমীকরণ",
-                "গড় মুক্তপথের রাশিমালা",
-                "Cp, Cv এর সংজ্ঞা ও সমীকরণ",
-                "গ্যাসের অণুর গড় বেগ, গড় বর্গবেগ এবং বর্গমূল গড় বর্গবেগ"
-            ]
-        },
-        {
-            title: "অধ্যায় ৫: তাপগতিবিদ্যার ২য় সূত্র এবং এনট্রপি",
-            topics: []
-        },
-        {
-            title: "অধ্যায় ৬: তাপগতিবিদ্যার ৩য় সূত্র",
-            topics: []
-        }
-    ]
-},
+<!-- হিডেন রুটিন টেবিল -->
+<div id="hidden-routine-table">
+    <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:20px;">
+        <h2 style="margin:0; color:#00695c; font-size:24px;">সরকারি আজিজুল হক কলেজ, বগুড়া</h2>
+        <h3 style="margin:8px 0; font-size:20px;">পদার্থবিজ্ঞান বিভাগ | AURORAS 25 BATCH</h3>
+        <h1 style="margin:12px 0; font-size:28px;">১ম ইন-কোর্স পরীক্ষার রুটিন</h1>
+        <div style="background:#eee; padding:8px 20px; border-radius:4px; display:inline-block; font-weight:bold; font-size:16px;">
+            শিক্ষা বর্ষ: ২০২৪-২০২৫
+        </div>
+    </div>
+    <table style="width:100%; border-collapse:collapse; margin-top:15px; font-size:14px;">
+        <thead>
+            <tr>
+                <th style="background:#00897b; color:white; padding:12px; text-align:left;">তারিখ</th>
+                <th style="background:#00897b; color:white; padding:12px; text-align:left;">বিষয়ের নাম</th>
+                <th style="background:#00897b; color:white; padding:12px; text-align:left;">বিষয় কোড</th>
+                <th style="background:#00897b; color:white; padding:12px; text-align:left;">সময়</th>
+                <th style="background:#00897b; color:white; padding:12px; text-align:left;">ধরন</th>
+                <th style="background:#00897b; color:white; padding:12px; text-align:left;">রুম নং</th>
+            </tr>
+        </thead>
+        <tbody id="hiddenRoutineTableBody">
+            <!-- JS দিয়ে ফিল করা হবে -->
+        </tbody>
+    </table>
+    <div style="margin-top:25px; padding-top:15px; border-top:2px solid #ddd; text-align:center; font-size:13px; color:#666;">
+        <div>উত্পন্ন হয়েছে: অরোরাস ২৫ ওয়েব পোর্টাল</div>
+        <div style="margin-top:5px;">ডেভেলপার: মোঃ শরিফুল ইসলাম | তারিখ: <span id="routineCurrentDate"></span></div>
+    </div>
+</div>
+
+<!-- হিডেন সিলেবাস টেবিল -->
+<div id="hidden-syllabus-table">
+    <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:20px;">
+        <h2 style="margin:0; color:#00695c; font-size:24px;">সরকারি আজিজুল হক কলেজ, বগুড়া</h2>
+        <h3 style="margin:8px 0; font-size:20px;">পদার্থবিজ্ঞান বিভাগ | AURORAS 25 BATCH</h3>
+        <h1 style="margin:12px 0; font-size:28px;">১ম ইন-কোর্স পরীক্ষার সিলেবাস</h1>
+        <div style="background:#eee; padding:8px 20px; border-radius:4px; display:inline-block; font-weight:bold; font-size:16px;">
+            শিক্ষা বর্ষ: ২০২৪-২০২৫
+        </div>
+    </div>
+    <table class="syllabus-table" id="syllabusTable">
+        <thead>
+            <tr>
+                <th width="15%">বিষয় কোড</th>
+                <th width="25%">বিষয়ের নাম</th>
+                <th width="30%">অধ্যায়</th>
+                <th width="30%">টপিকসমূহ</th>
+            </tr>
+        </thead>
+        <tbody id="syllabusTableBody">
+            <!-- JS দিয়ে ফিল করা হবে -->
+        </tbody>
+    </table>
+    <div style="margin-top:25px; padding-top:15px; border-top:2px solid #ddd; text-align:center; font-size:13px; color:#666;">
+        <div>উত্পন্ন হয়েছে: অরোরাস ২৫ ওয়েব পোর্টাল</div>
+        <div style="margin-top:5px;">ডেভেলপার: মোঃ শরিফুল ইসলাম | তারিখ: <span id="currentDate"></span></div>
+    </div>
+</div>
+
+<script>
+// ডেটাবেজ - সম্পূর্ণ সিলেবাস সহ
+const exams = [
+    {
+        subject: "বাংলাদেশের ইতিহাস : ভাষা, সংস্কৃতি ও পরিচয়",
+        code: "219901",
+        date: "2026-01-15",
+        time: "11:00 AM",
+        type: "nonmajor",
+        duration: "৩০ মিনিট",
+        fullMarks: "১০",
+        room: "২২১",
+        syllabus: [
             {
-                subject: "Information & Communication Technology",
-                code: "219903",
-                date: "2026-01-21",
-                time: "11:00 AM",
-                type: "nonmajor",
-                syllabus: [
-                    { title: "To be announced later", topics: [] }
+                title: "অধ্যায় ২ : ঔপনিবেশিক যুগ",
+                topics: [
+                    "পলাশীর যুদ্ধ বলতে কী বুঝ?",
+                    "দ্বৈতশাসন বলতে কী বুঝ?",
+                    "বেঙ্গল রেনেসাঁ বলতে কী বোঝো?",
+                    "হিন্দু সমাজের সংস্কারগুলো আলোচনা",
+                    "ইস্ট ইন্ডিয়া কোম্পানির দেওয়ানি লাভের পটভূমি",
+                    "দেওয়ানি বলতে কী বোঝো?",
+                    "নিয়ামক আইন (Regulating Act) বলতে কী বুঝ?"
+                ]
+            }
+        ]
+    },
+    {
+        subject: "বলবিদ্যা",
+        code: "212701",
+        date: "2026-01-18",
+        time: "11:00 AM",
+        type: "major",
+        duration: "৩০ মিনিট",
+        fullMarks: "১০",
+        room: "২২১",
+        syllabus: [
+            {
+                title: "অধ্যায় ১: ভেক্টর বীজগণিত",
+                topics: [
+                    "গাউস'স ডাইভারজেন্স (Gauss's Divergence) উপপাদ্য",
+                    "গ্রিনের উপপাদ্য (Green's Theorem)"
                 ]
             },
             {
-    subject: "Fundamentals of Mathematics",
-    code: "213709",
-    date: "2026-01-22",
-    time: "11:00 AM",
-    type: "nonmajor",
-    syllabus: [
-        {
-            title: "অধ্যায় ২ : বাস্তব সংখ্যা",
-            topics: []
-        },
-        {
-            title: "অধ্যায় ৩ : জটিল সংখ্যা",
-            topics: []
-        },
-        {
-            title: "অধ্যায় ৫ : বহুপদী",
-            topics: []
-        }
-    ]
-},
-{
-    subject: "Chemistry - 1",
-    code: "212807",
-    date: "2026-01-26",
-    time: "10:30 AM",
-    type: "nonmajor",
-    syllabus: [
-        {
-            title: "দ্বিতীয় অধ্যায়: পরমাণুর গঠন",
-            topics: []
-        },
-        {
-            title: "চতুর্থ অধ্যায়: পর্যায় সারণি",
-            topics: []
-        },
-        {
-            title: "১১ অধ্যায়: অ্যালিফেটিক হাইড্রোকার্বন সমূহ",
-            topics: [
-                "জৈব যৌগের সংজ্ঞা, উৎস, শ্রেণীবিভাগ, সাধারণ শ্রেণীবিভাগ ও কার্যকরী মূলক",
-                "ক্যাটেনেশন, সমানুতা, মুক্ত মূলক, ফ্রী রেডিকেল, কার্বোক্যাটায়ন, কার্বনায়ন, ইলেকট্রফিলিক ও নিউক্লিওফিলিক এর সংজ্ঞা",
-                "জৈব ও অজৈব যৌগের মধ্যে পার্থক্য",
-                "সমগোত্রীয় শ্রেণীর বৈশিষ্ট্য",
-                "কার্বোক্যাটায়নের স্থায়িত্বের ক্রম ও বৈশিষ্ট্য",
-                "জৈব যৌগের নামকরণ (অ্যালকেন)",
-                "অ্যালকেনের সাধারণ প্রস্তুতি ও ধর্ম (ভৌত ও রাসায়নিক)",
-                "অ্যালকেনের ব্যবহার"
-            ]
-        }
-    ]
-},
+                title: "অধ্যায় ৪: দ্বিমাত্রিক ও ত্রিমাত্রিক গতি",
+                topics: []
+            },
+            {
+                title: "অধ্যায় ৫: বল ও গতি",
+                topics: []
+            },
+            {
+                title: "অধ্যায় ৬: কাজ, শক্তি ও ক্ষমতা",
+                topics: []
+            }
+        ]
+    },
+    {
+        subject: "পদার্থের ধর্ম ও তরঙ্গ",
+        code: "212703",
+        date: "2026-01-19",
+        time: "11:00 AM",
+        type: "major",
+        duration: "৩০ মিনিট",
+        fullMarks: "১০",
+        room: "২২১",
+        syllabus: [
+            {
+                title: "অধ্যায় ১: মহাকর্ষ",
+                topics: []
+            },
+            {
+                title: "অধ্যায় ৫: তরঙ্গ",
+                topics: []
+            },
+            {
+                title: "অধ্যায় ৬: তরঙ্গ ও শব্দ",
+                topics: []
+            }
+        ]
+    },
+    {
+        subject: "তাপ, তাপগতিবিদ্যা ও বিকিরণ",
+        code: "212705",
+        date: "2026-01-20",
+        time: "11:00 AM",
+        type: "major",
+        duration: "৩০ মিনিট",
+        fullMarks: "১০",
+        room: "২২১",
+        syllabus: [
+            {
+                title: "অধ্যায় ১: তাপ ও তাপমাত্রা",
+                topics: [
+                    "স্থির আয়তন হাইড্রোজেন থার্মোমিটার",
+                    "স্থির চাপ বায়ু থার্মোমিটার",
+                    "প্লাটিনাম-রোধ থার্মোমিটার",
+                    "নিম্ন ও উচ্চ তাপমাত্রা পরিমাণ পদ্ধতি"
+                ]
+            },
+            {
+                title: "অধ্যায় ২: গ্যাসের গতিতত্ত্ব",
+                topics: [
+                    "গ্যাসের গতিতাত্ত্বর চালের সমীকরণ",
+                    "গড় মুক্তপথের রাশিমালা",
+                    "Cp, Cv এর সংজ্ঞা ও সমীকরণ",
+                    "গ্যাসের অণুর গড় বেগ, গড় বর্গবেগ এবং বর্গমূল গড় বর্গবেগ"
+                ]
+            },
+            {
+                title: "অধ্যায় ৫: তাপগতিবিদ্যার ২য় সূত্র এবং এনট্রপি",
+                topics: []
+            },
+            {
+                title: "অধ্যায় ৬: তাপগতিবিদ্যার ৩য় সূত্র",
+                topics: []
+            }
+        ]
+    },
+    {
+        subject: "তথ্য ও যোগাযোগ প্রযুক্তি",
+        code: "219903",
+        date: "2026-01-21",
+        time: "11:00 AM",
+        type: "nonmajor",
+        duration: "৩০ মিনিট",
+        fullMarks: "১০",
+        room: "২২১",
+        syllabus: [
+            { 
+                title: "শীঘ্রই ঘোষণা করা হবে", 
+                topics: [] 
+            }
+        ]
+    },
+    {
+        subject: "ফাউন্ডেশন অফ ম্যাথমেটিক্স",
+        code: "213709",
+        date: "2026-01-22",
+        time: "11:00 AM",
+        type: "nonmajor",
+        duration: "৩০ মিনিট",
+        fullMarks: "১০",
+        room: "২২১",
+        syllabus: [
+            {
+                title: "অধ্যায় ২ : বাস্তব সংখ্যা",
+                topics: []
+            },
+            {
+                title: "অধ্যায় ৩ : জটিল সংখ্যা",
+                topics: []
+            },
+            {
+                title: "অধ্যায় ৫ : বহুপদী",
+                topics: []
+            }
+        ]
+    },
+    {
+        subject: "রসায়ন - ১",
+        code: "212807",
+        date: "2026-01-26",
+        time: "10:30 AM",
+        type: "nonmajor",
+        duration: "৩০ মিনিট",
+        fullMarks: "১০",
+        room: "২২১",
+        syllabus: [
+            {
+                title: "দ্বিতীয় অধ্যায়: পরমাণুর গঠন",
+                topics: []
+            },
+            {
+                title: "চতুর্থ অধ্যায়: পর্যায় সারণি",
+                topics: []
+            },
+            {
+                title: "১১ অধ্যায়: অ্যালিফেটিক হাইড্রোকার্বন সমূহ",
+                topics: [
+                    "জৈব যৌগের সংজ্ঞা, উৎস, শ্রেণীবিভাগ, সাধারণ শ্রেণীবিভাগ ও কার্যকরী মূলক",
+                    "ক্যাটেনেশন, সমানুতা, মুক্ত মূলক, ফ্রী রেডিকেল, কার্বোক্যাটায়ন, কার্বনায়ন, ইলেকট্রফিলিক ও নিউক্লিওফিলিক এর সংজ্ঞা",
+                    "জৈব ও অজৈব যৌগের মধ্যে পার্থক্য",
+                    "সমগোত্রীয় শ্রেণীর বৈশিষ্ট্য",
+                    "কার্বোক্যাটায়নের স্থায়িত্বের ক্রম ও বৈশিষ্ট্য",
+                    "জৈব যৌগের নামকরণ (অ্যালকেন)",
+                    "অ্যালকেনের সাধারণ প্রস্তুতি ও ধর্ম (ভৌত ও রাসায়নিক)",
+                    "অ্যালকেনের ব্যবহার"
+                ]
+            }
+        ]
+    },
+    {
+        subject: "ক্যালকুলাস - ১",
+        code: "213711",
+        date: "2026-01-26",
+        time: "11:00 AM",
+        type: "nonmajor",
+        duration: "৩০ মিনিট",
+        fullMarks: "১০",
+        room: "২২১",
+        syllabus: [
+            {
+                title: "অধ্যায় ১ : ফাংশন",
+                topics: [
+                    "A - ফাংশন",
+                    "B - বিভিন্ন প্রকার ফাংশন"
+                ]
+            },
+            {
+                title: "অধ্যায় ২ : অবিচ্ছিন্নতা ও অন্তরীকরণ যোগ্যতা",
+                topics: [
+                    "B - অবিচ্ছিন্নতা",
+                    "C - অন্তরীকরণ যোগ্যতা"
+                ]
+            },
+            {
+                title: "অধ্যায় ৩ : অন্তরীকরণ",
+                topics: []
+            },
+            {
+                title: "অধ্যায় ১০ : অনির্দিষ্ট যোগজ",
+                topics: []
+            },
+            {
+                title: "অধ্যায় ১১ : প্রতিস্থাপন পদ্ধতি",
+                topics: []
+            }
+        ]
+    },
+    {
+        subject: "পরিসংখ্যান",
+        code: "213607",
+        date: "2026-01-26",
+        time: "12:15 PM",
+        type: "nonmajor",
+        duration: "৩০ মিনিট",
+        fullMarks: "১০",
+        room: "৪০২/৪০৩",
+        syllabus: [
+            { 
+                title: "শীঘ্রই ঘোষণা করা হবে", 
+                topics: [] 
+            }
+        ]
+    }
+];
 
-{
-    subject: "Calculus - 1",
-    code: "213711",
-    date: "2026-01-26",
-    time: "11:00 AM",
-    type: "nonmajor",
-    syllabus: [
-        {
-            title: "অধ্যায় ১ : ফাংশন",
-            topics: [
-                "A - ফাংশন",
-                "B - বিভিন্ন প্রকার ফাংশন"
-            ]
-        },
-        {
-            title: "অধ্যায় ২ : অবিচ্ছিন্নতা ও অন্তরীকরণ যোগ্যতা",
-            topics: [
-                "B - অবিচ্ছিন্নতা",
-                "C - অন্তরীকরণ যোগ্যতা"
-            ]
-        },
-        {
-            title: "অধ্যায় ৩ : অন্তরীকরণ",
-            topics: []
-        },
-        {
-            title: "অধ্যায় ১০ : অনির্দিষ্ট যোগজ",
-            topics: []
-        },
-        {
-            title: "অধ্যায় ১১ : প্রতিস্থাপন পদ্ধতি",
-            topics: []
-        }
-    ]
+// গ্লোবাল ভেরিয়েবল
+let currentFilter = 'all';
+let currentExams = [...exams];
+let displayExams = [];
+let nextExam = null;
+let marqueeInterval = null;
+let countdownInterval = null;
+let today = new Date();
+let showingAllExams = false;
+
+// ফরম্যাটিং ফাংশন
+function formatDate(dateStr) {
+    if(dateStr === "Pending") return { display: "তারিখ নির্ধারণ হয়নি", day: "" };
+    const d = new Date(dateStr);
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    const dayOptions = { weekday: 'long' };
+    return {
+        display: d.toLocaleDateString('bn-BD', options),
+        day: d.toLocaleDateString('bn-BD', dayOptions)
+    };
 }
-        ];
 
-        // --- ফরম্যাটিং ফাংশন ---
-        function formatDate(dateStr) {
-            if(dateStr === "Pending") return { display: "Date Pending", day: "" };
-            const d = new Date(dateStr);
-            return {
-                display: d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
-                day: d.toLocaleDateString('en-US', { weekday: 'long' })
+// সময় পার্স করার ফাংশন
+function parseTime(timeStr) {
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':');
+    
+    hours = parseInt(hours);
+    minutes = parseInt(minutes);
+    
+    if (modifier === 'PM' && hours < 12) {
+        hours += 12;
+    }
+    if (modifier === 'AM' && hours === 12) {
+        hours = 0;
+    }
+    
+    return { hours, minutes };
+}
+
+// পরীক্ষার অবস্থা চেক (সময়সহ)
+function getExamStatus(exam) {
+    if(exam.date === "Pending") return { 
+        status: "pending", 
+        daysLeft: null, 
+        color: "#78909c", 
+        message: "তারিখ নির্ধারণ হয়নি",
+        nextExam: false
+    };
+    
+    const now = new Date();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const examDate = new Date(exam.date);
+    examDate.setHours(0, 0, 0, 0);
+    
+    // পরীক্ষার সময় পার্স করুন
+    const examTime = parseTime(exam.time);
+    const examDateTime = new Date(exam.date);
+    examDateTime.setHours(examTime.hours, examTime.minutes, 0, 0);
+    
+    // সময় পার্থক্য
+    const timeDiff = examDateTime - now;
+    const dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    
+    // আজকের তারিখ চেক
+    const isToday = examDate.getTime() === today.getTime();
+    
+    // পরবর্তী পরীক্ষা চেক
+    const isNextExam = nextExam && exam.code === nextExam.code;
+    
+    if (timeDiff < 0) {
+        // পরীক্ষা শেষ হয়ে গেছে
+        return { 
+            status: "completed", 
+            daysLeft: 0, 
+            color: "#4caf50", 
+            message: "পরীক্ষা সম্পন্ন হয়েছে",
+            nextExam: false
+        };
+    } else if (isToday && timeDiff > 0 && timeDiff <= (1000 * 60 * 60 * 24)) {
+        // আজকের পরীক্ষা, এখনো হয়নি
+        const hoursLeft = Math.floor(timeDiff / (1000 * 60 * 60));
+        const minutesLeft = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+        
+        if (hoursLeft > 0) {
+            return { 
+                status: "today", 
+                daysLeft: 0, 
+                color: "#f44336", 
+                message: `আজকের পরীক্ষা (${hoursLeft} ঘন্টা ${minutesLeft} মিনিট বাকি)`,
+                nextExam: false
+            };
+        } else {
+            return { 
+                status: "today", 
+                daysLeft: 0, 
+                color: "#f44336", 
+                message: `আজকের পরীক্ষা (${minutesLeft} মিনিট বাকি)`,
+                nextExam: false
             };
         }
+    } else if (dayDiff === 1) {
+        // আগামীকাল
+        return { 
+            status: "tomorrow", 
+            daysLeft: 1, 
+            color: "#ff9800", 
+            message: "আগামীকাল পরীক্ষা",
+            nextExam: isNextExam
+        };
+    } else if (dayDiff > 1) {
+        // ভবিষ্যতের পরীক্ষা
+        return { 
+            status: "upcoming", 
+            daysLeft: dayDiff, 
+            color: "#00897b", 
+            message: `${dayDiff} দিন বাকি`,
+            nextExam: isNextExam
+        };
+    } else if (dayDiff === 0 && timeDiff > 0) {
+        // আজকের পরীক্ষা, একই দিনে কিন্তু ভবিষ্যতের সময়
+        const hoursLeft = Math.floor(timeDiff / (1000 * 60 * 60));
+        return { 
+            status: "today", 
+            daysLeft: 0, 
+            color: "#f44336", 
+            message: `আজকের পরীক্ষা (${hoursLeft} ঘন্টা বাকি)`,
+            nextExam: false
+        };
+    }
+    
+    return { 
+        status: "pending", 
+        daysLeft: null, 
+        color: "#78909c", 
+        message: "তারিখ নির্ধারণ হয়নি",
+        nextExam: false
+    };
+}
 
-        // --- রেন্ডারিং ফাংশন ---
-        function renderExams(data) {
-            const container = document.getElementById('examContainer');
-            const printBody = document.getElementById('printTableBody');
-            let marqueeHTML = "";
+// পরবর্তী পরীক্ষা নির্ধারণ
+function findNextExam() {
+    const now = new Date();
+    
+    // শুধুমাত্র ভবিষ্যতের বা আজকের (যারা এখনো হয়নি) পরীক্ষাগুলো খুঁজুন
+    const upcomingExams = exams.filter(exam => {
+        if(exam.date === "Pending") return false;
+        
+        const examTime = parseTime(exam.time);
+        const examDateTime = new Date(exam.date);
+        examDateTime.setHours(examTime.hours, examTime.minutes, 0, 0);
+        
+        // শুধুমাত্র ভবিষ্যতের পরীক্ষাগুলো
+        return examDateTime > now;
+    });
+    
+    if(upcomingExams.length === 0) return null;
+    
+    // সবচেয়ে কাছের তারিখের পরীক্ষা
+    upcomingExams.sort((a, b) => {
+        const timeA = parseTime(a.time);
+        const dateA = new Date(a.date);
+        dateA.setHours(timeA.hours, timeA.minutes, 0, 0);
+        
+        const timeB = parseTime(b.time);
+        const dateB = new Date(b.date);
+        dateB.setHours(timeB.hours, timeB.minutes, 0, 0);
+        
+        return dateA - dateB;
+    });
+    
+    return upcomingExams[0];
+}
+
+// কাউন্টডাউন আপডেট
+function updateCountdown() {
+    if(!nextExam || nextExam.date === "Pending") {
+        document.getElementById('countdownBanner').style.display = 'none';
+        return;
+    }
+    
+    const now = new Date();
+    const examTime = parseTime(nextExam.time);
+    const examDateTime = new Date(nextExam.date);
+    examDateTime.setHours(examTime.hours, examTime.minutes, 0, 0);
+    
+    const diff = examDateTime - now;
+    
+    if(diff <= 0) {
+        // পরীক্ষা হয়ে গেছে, পরবর্তী পরীক্ষা খুঁজুন
+        nextExam = findNextExam();
+        if(!nextExam) {
+            document.getElementById('countdownBanner').style.display = 'none';
+            updateMarquee();
+            return;
+        }
+        updateNextExamDisplay();
+        updateMarquee();
+    }
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    document.getElementById('days').textContent = days.toString().padStart(2, '0');
+    document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+    document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+    document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+}
+
+// পরবর্তী পরীক্ষা ডিসপ্লে আপডেট
+function updateNextExamDisplay() {
+    if(!nextExam) {
+        document.getElementById('countdownBanner').style.display = 'none';
+        return;
+    }
+    
+    const dateInfo = formatDate(nextExam.date);
+    document.getElementById('nextExamSubject').textContent = nextExam.subject;
+    document.getElementById('nextExamDate').textContent = dateInfo.display;
+    document.getElementById('nextExamTime').textContent = nextExam.time;
+    document.getElementById('nextExamRoom').textContent = nextExam.room;
+    
+    document.getElementById('countdownBanner').style.display = 'block';
+}
+
+// টিকার আপডেট
+function updateMarquee() {
+    const now = new Date();
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
+    
+    let marqueeHTML = '';
+    
+    // আজকের পরীক্ষা
+    const todayExams = exams.filter(exam => {
+        if(exam.date === "Pending") return false;
+        const examDate = new Date(exam.date);
+        examDate.setHours(0, 0, 0, 0);
+        return examDate.getTime() === todayDate.getTime();
+    });
+    
+    // সম্পন্ন পরীক্ষা
+    const completedExams = exams.filter(exam => {
+        if(exam.date === "Pending") return false;
+        const examTime = parseTime(exam.time);
+        const examDateTime = new Date(exam.date);
+        examDateTime.setHours(examTime.hours, examTime.minutes, 0, 0);
+        return examDateTime < now;
+    });
+    
+    // পরবর্তী পরীক্ষা
+    const nextExams = exams.filter(exam => {
+        if(exam.date === "Pending") return false;
+        const examTime = parseTime(exam.time);
+        const examDateTime = new Date(exam.date);
+        examDateTime.setHours(examTime.hours, examTime.minutes, 0, 0);
+        return examDateTime > now;
+    });
+    
+    // আজকের পরীক্ষার স্ট্যাটাস
+    if(todayExams.length > 0) {
+        const todayExam = todayExams[0];
+        const todayStatus = getExamStatus(todayExam);
+        
+        if(todayStatus.status === "today") {
+            marqueeHTML += `<span style="color:#ff5252;">🔥 আজকের পরীক্ষা: ${todayExam.subject} (${todayExam.time})</span>`;
+        } else if(todayStatus.status === "completed") {
+            marqueeHTML += `<span style="color:#4caf50;">✅ আজকের পরীক্ষা সম্পন্ন: ${todayExam.subject}</span>`;
+        }
+    } else {
+        // আজকে কোনো পরীক্ষা নেই
+        marqueeHTML += `<span style="color:#9e9e9e;">আজকে কোনো পরীক্ষা নেই</span>`;
+    }
+    
+    // পরবর্তী পরীক্ষা
+    if(nextExams.length > 0) {
+        nextExams.sort((a, b) => {
+            const timeA = parseTime(a.time);
+            const dateA = new Date(a.date);
+            dateA.setHours(timeA.hours, timeA.minutes, 0, 0);
             
-            container.innerHTML = '';
-            printBody.innerHTML = '';
-
-            data.forEach(exam => {
-                const dateInfo = formatDate(exam.date);
-                const isMajor = exam.type === 'major';
-                
-                // কাউন্টডাউন লজিক
-                let statusText = "Pending";
-                let statusColor = "#78909c";
-                let borderClass = "";
-
-                if(exam.date !== "Pending") {
-                    const today = new Date(); today.setHours(0,0,0,0);
-                    const examDate = new Date(exam.date);
-                    const diffTime = examDate - today;
-                    const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                    if(daysLeft < 0) { statusText = "Completed"; statusColor = "#10b981"; }
-                    else if(daysLeft === 0) { 
-                        statusText = "TODAY EXAM!"; statusColor = "#d32f2f"; borderClass = "border: 2px solid #d32f2f;";
-                        marqueeHTML += `<span style="color:#ff5252">🔴 TODAY: ${exam.subject}</span>`;
-                    }
-                    else if(daysLeft === 1) { 
-                        statusText = "Tomorrow"; statusColor = "#f57c00"; 
-                        marqueeHTML += `<span style="color:#ffab40">⚠️ TOMORROW: ${exam.subject}</span>`;
-                    }
-                    else { 
-                        statusText = `${daysLeft} Days Left`; statusColor = "#00897b"; 
-                        marqueeHTML += `<span>📅 Upcoming: ${exam.subject}</span>`;
-                    }
-                }
-
-                // সিলেবাস HTML তৈরি (Nested Loop)
-                let syllabusHTML = `<div style="text-align:center; color:#999;">No syllabus info</div>`;
-                if (exam.syllabus.length > 0) {
-                    syllabusHTML = exam.syllabus.map(chap => `
-                        <div class="chapter-box">
-                            <div class="chapter-title">▪ ${chap.title}</div>
-                            ${chap.topics.length > 0 ? `
-                                <ul class="topic-list">
-                                    ${chap.topics.map(t => `<li>${t}</li>`).join('')}
-                                </ul>
-                            ` : ''}
-                        </div>
-                    `).join('');
-                }
-
-                // কার্ড HTML
-                const card = `
-                    <div class="exam-card" style="${borderClass}">
-                        <div class="ec-header">
-                            <span class="code-barcode">${exam.code}</span>
-                            <span class="type-badge ${isMajor ? 'bg-major' : 'bg-non'}">${isMajor ? 'Major' : 'Non-Major'}</span>
-                        </div>
-                        <div class="ec-body">
-                            <h3 class="ec-subject">${exam.subject}</h3>
-                            
-                            <div class="ec-meta">
-                                <div class="meta-item"><i class="far fa-calendar-alt"></i> ${dateInfo.display}</div>
-                                <div class="meta-item"><i class="far fa-clock"></i> ${exam.time}</div>
-                            </div>
-
-                            <div class="ec-timer" style="border-left-color: ${statusColor}">
-                                <div class="timer-val" style="color: ${statusColor}">${statusText}</div>
-                                <div style="font-size:0.8rem; color:#888;">${dateInfo.day}</div>
-                            </div>
-
-                            <button class="syllabus-toggle" onclick="this.nextElementSibling.classList.toggle('show')">
-                                <i class="fas fa-book-open"></i> View Syllabus & Topics <i class="fas fa-chevron-down" style="margin-left:auto"></i>
-                            </button>
-                            <div class="syllabus-content">
-                                ${syllabusHTML}
-                            </div>
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += card;
-
-                // প্রিন্ট টেবিল HTML
-                printBody.innerHTML += `
-                    <tr>
-                        <td style="font-family:monospace; font-weight:bold;">${exam.code}</td>
-                        <td>${dateInfo.display}<br><small>${dateInfo.day}</small></td>
-                        <td>${exam.subject}</td>
-                        <td>${exam.time}</td>
-                    </tr>
-                `;
-            });
-
-            // টিকার আপডেট
-            if(marqueeHTML === "") marqueeHTML = "<span>✅ Check the full schedule below for updates...</span>";
-            document.getElementById('marqueeText').innerHTML = marqueeHTML;
-
-            // স্ট্যাটস আপডেট
-            document.getElementById('totalCount').innerText = data.length;
-            document.getElementById('majorCount').innerText = data.filter(e => e.type === 'major').length;
-            document.getElementById('nonMajorCount').innerText = data.filter(e => e.type === 'nonmajor').length;
-        }
-
-        // --- সার্চ ফাংশন ---
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const val = e.target.value.toLowerCase();
-            const filtered = exams.filter(ex => 
-                ex.subject.toLowerCase().includes(val) || 
-                ex.code.includes(val) ||
-                ex.date.toLowerCase().includes(val)
-            );
-            renderExams(filtered);
+            const timeB = parseTime(b.time);
+            const dateB = new Date(b.date);
+            dateB.setHours(timeB.hours, timeB.minutes, 0, 0);
+            
+            return dateA - dateB;
         });
+        
+        const next = nextExams[0];
+        const dateInfo = formatDate(next.date);
+        marqueeHTML += `<span style="color:#2196f3;">⏳ পরবর্তী পরীক্ষা: ${next.subject} (${dateInfo.display} - ${next.time})</span>`;
+    } else if(completedExams.length === exams.length) {
+        // সব পরীক্ষা শেষ
+        marqueeHTML += `<span style="color:#4caf50;">✅ সব পরীক্ষা সম্পন্ন হয়েছে</span>`;
+    }
+    
+    if(marqueeHTML === '') {
+        marqueeHTML = '<span style="color:#9e9e9e;">কোনো পরীক্ষার তথ্য পাওয়া যায়নি</span>';
+    }
+    
+    document.getElementById('marqueeText').innerHTML = marqueeHTML;
+}
 
-        // --- রুটিন ডাউনলোড (Image) ---
-        function downloadRoutineImage() {
-            const element = document.getElementById('hidden-routine-table');
-            const btn = document.querySelector('.dl-routine-btn');
-            const oldText = btn.innerHTML;
-
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
-
-            html2canvas(element, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'Auroras25_Exam_Routine.jpg';
-                link.href = canvas.toDataURL('image/jpeg');
-                link.click();
-                btn.innerHTML = oldText;
-            }).catch(err => {
-                alert('Error generating image');
-                btn.innerHTML = oldText;
-            });
-        }
-
-        // --- অন্যান্য ফাংশন ---
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.querySelector('.overlay').classList.toggle('active');
-        }
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
+// রুটিন টেবিল আপডেট
+function updateRoutineTable(data) {
+    const tbody = document.getElementById('routineTableBody');
+    tbody.innerHTML = '';
+    
+    // হিডেন রুটিন টেবিলের জন্য
+    const hiddenTbody = document.getElementById('hiddenRoutineTableBody');
+    hiddenTbody.innerHTML = '';
+    
+    // তারিখ অনুযায়ী সাজানো
+    const sortedExams = [...data].sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    sortedExams.forEach(exam => {
+        const dateInfo = formatDate(exam.date);
+        const status = getExamStatus(exam);
+        
+        // স্ট্যাটাস ক্লাস নির্ধারণ
+        let statusClass = '';
+        let statusText = '';
+        
+        switch(status.status) {
+            case 'completed':
+                statusClass = 'status-completed';
+                statusText = 'সম্পন্ন';
+                break;
+            case 'today':
+                statusClass = 'status-today';
+                statusText = 'আজকের পরীক্ষা';
+                break;
+            case 'upcoming':
+            case 'tomorrow':
+                statusClass = 'status-upcoming';
+                statusText = 'আসন্ন';
+                break;
+            default:
+                statusClass = '';
+                statusText = 'নির্ধারণ হয়নি';
         }
         
-// --- নতুন ডাউনলোড ফাংশন (Canvas মেথড) ---
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${dateInfo.display}</td>
+            <td>${exam.subject}</td>
+            <td>${exam.code}</td>
+            <td>${exam.time}</td>
+            <td><span class="subject-type ${exam.type === 'major' ? 'type-major' : 'type-nonmajor'}">${exam.type === 'major' ? 'মেজর' : 'নন-মেজর'}</span></td>
+            <td>${exam.room}</td>
+            <td><span class="exam-status ${statusClass}">${statusText}</span></td>
+        `;
+        tbody.appendChild(row);
+        
+        // হিডেন টেবিলের জন্য রো
+        const hiddenRow = document.createElement('tr');
+        hiddenRow.innerHTML = `
+            <td style="border:1px solid #ddd; padding:10px;">${dateInfo.display}</td>
+            <td style="border:1px solid #ddd; padding:10px;">${exam.subject}</td>
+            <td style="border:1px solid #ddd; padding:10px;">${exam.code}</td>
+            <td style="border:1px solid #ddd; padding:10px;">${exam.time}</td>
+            <td style="border:1px solid #ddd; padding:10px;">
+                <span style="background:${exam.type === 'major' ? '#e8f5e9' : '#e3f2fd'}; 
+                      color:${exam.type === 'major' ? '#2e7d32' : '#1565c0'}; 
+                      padding:4px 10px; border-radius:4px; font-weight:600; font-size:12px;">
+                    ${exam.type === 'major' ? 'মেজর' : 'নন-মেজর'}
+                </span>
+            </td>
+            <td style="border:1px solid #ddd; padding:10px; text-align:center;">${exam.room}</td>
+        `;
+        hiddenTbody.appendChild(hiddenRow);
+    });
+    
+    // বর্তমান তারিখ সেট করুন
+    const now = new Date();
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    document.getElementById('routineCurrentDate').textContent = now.toLocaleDateString('bn-BD', options);
+}
+
+// সিলেবাস টেবিল আপডেট
+function updateSyllabusTable(data) {
+    const tbody = document.getElementById('syllabusTableBody');
+    tbody.innerHTML = '';
+    
+    // তারিখ অনুযায়ী সাজানো
+    const sortedExams = [...data].sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    sortedExams.forEach(exam => {
+        let syllabusHTML = '';
+        
+        if(exam.syllabus.length > 0) {
+            exam.syllabus.forEach(chap => {
+                let topicsHTML = '';
+                
+                if(chap.topics.length > 0) {
+                    chap.topics.forEach(topic => {
+                        topicsHTML += `<span class="syllabus-topic">${topic}</span>`;
+                    });
+                } else if(chap.title !== "শীঘ্রই ঘোষণা করা হবে") {
+                    topicsHTML = '<span style="color:#999; font-style:italic;">টপিকের তথ্য শীঘ্রই আপডেট করা হবে</span>';
+                } else {
+                    topicsHTML = '<span style="color:#999; font-style:italic;">সিলেবাস শীঘ্রই আপডেট করা হবে</span>';
+                }
+                
+                syllabusHTML += `
+                    <div style="margin-bottom: 12px;">
+                        <span class="syllabus-chapter">${chap.title}</span>
+                        ${topicsHTML}
+                    </div>
+                `;
+            });
+        } else {
+            syllabusHTML = '<span style="color:#999; font-style:italic;">সিলেবাসের তথ্য পাওয়া যায়নি</span>';
+        }
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${exam.subject}</td>
+            <td>${exam.code}</td>
+            <td>${syllabusHTML}</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// রেন্ডারিং ফাংশন - ইউনিক ডিজাইন
+function renderExams(data) {
+    const container = document.getElementById('examContainer');
+    container.innerHTML = '';
+    
+    // শুধুমাত্র প্রথম ২টি কার্ড দেখাবে (যদি সব দেখানো না হয়)
+    const examsToShow = showingAllExams ? data : data.slice(0, 2);
+    
+    examsToShow.forEach(exam => {
+        const dateInfo = formatDate(exam.date);
+        const status = getExamStatus(exam);
+        const isMajor = exam.type === 'major';
+        const isCompleted = status.status === 'completed';
+        
+        // সিলেবাস HTML তৈরি
+        let syllabusHTML = '';
+        if(exam.syllabus.length > 0) {
+            syllabusHTML = exam.syllabus.map(chap => {
+                // শুধুমাত্র টপিক থাকলে দেখাবে
+                if(chap.topics.length > 0) {
+                    return `
+                        <div class="chapter-box">
+                            <div class="chapter-title">${chap.title}</div>
+                            <ul class="topic-list">
+                                ${chap.topics.map(t => `<li>${t}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                } else if(chap.title && chap.title !== "শীঘ্রই ঘোষণা করা হবে") {
+                    // শুধুমাত্র অধ্যায়ের নাম দেখাবে যদি টপিক না থাকে
+                    return `
+                        <div class="chapter-box">
+                            <div class="chapter-title">${chap.title}</div>
+                        </div>
+                    `;
+                } else {
+                    return ''; // টপিক না থাকলে কিছু দেখাবে না
+                }
+            }).join('');
+        }
+        
+        // যদি কোনো সিলেবাস না থাকে
+        if(syllabusHTML === '') {
+            syllabusHTML = '<div style="text-align:center; color:#999; padding:10px;">সিলেবাসের তথ্য পাওয়া যায়নি</div>';
+        }
+        
+        // স্ট্যাটাস বার টেক্সট
+        let statusBarText = status.message;
+        let statusBarColor = status.color;
+        
+        const card = `
+            <div class="exam-card ${isCompleted ? 'completed' : ''}">
+                <div class="ec-header">
+                    <div class="code-badge">কোড: ${exam.code}</div>
+                    <span class="type-badge ${isMajor ? 'bg-major' : 'bg-non'}">
+                        ${isMajor ? 'মেজর' : 'নন-মেজর'}
+                    </span>
+                </div>
+                <div class="ec-body">
+                    <h3 class="subject-title">${exam.subject}</h3>
+                    
+                    <div class="exam-info-grid">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="far fa-calendar-alt"></i>
+                                তারিখ
+                            </div>
+                            <div class="info-value">${dateInfo.display}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="far fa-clock"></i>
+                                সময়
+                            </div>
+                            <div class="info-value">${exam.time}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-calendar-day"></i>
+                                দিন
+                            </div>
+                            <div class="info-value">${dateInfo.day}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-door-open"></i>
+                                রুম নং
+                            </div>
+                            <div class="info-value">${exam.room}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="status-section" style="background: linear-gradient(135deg, ${statusBarColor}15, ${statusBarColor}05); border-color: ${statusBarColor}30;">
+                        <div class="status-text" style="color: ${statusBarColor}">
+                            ${statusBarText}
+                        </div>
+                        ${status.daysLeft !== null && status.status === 'upcoming' ? `
+                            <div class="status-details">
+                                পরীক্ষা পর্যন্ত ${status.daysLeft} দিন বাকি
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="meta-info-bar">
+                        <div class="meta-item">
+                            <div class="meta-icon">
+                                <i class="fas fa-hourglass-half"></i>
+                            </div>
+                            <div class="meta-label">সময়</div>
+                            <div class="meta-value">${exam.duration}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="meta-label">মোট নম্বর</div>
+                            <div class="meta-value">${exam.fullMarks}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="meta-label">ধরন</div>
+                            <div class="meta-value">${isMajor ? 'মেজর' : 'নন-মেজর'}</div>
+                        </div>
+                    </div>
+                    
+                    <button class="syllabus-toggle" onclick="toggleSyllabus(this)">
+                        <i class="fas fa-book-open"></i>
+                        সিলেবাস দেখুন
+                        <i class="fas fa-chevron-down" style="margin-left:auto"></i>
+                    </button>
+                    <div class="syllabus-content">
+                        ${syllabusHTML}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        container.innerHTML += card;
+    });
+    
+    // সবগুলো দেখুন বাটন আপডেট
+    updateShowAllButton(data.length);
+    
+    // স্ট্যাটস আপডেট
+    document.getElementById('totalCount').textContent = data.length;
+    document.getElementById('majorCount').textContent = data.filter(e => e.type === 'major').length;
+    document.getElementById('nonMajorCount').textContent = data.filter(e => e.type === 'nonmajor').length;
+    
+    // রুটিন টেবিল আপডেট
+    updateRoutineTable(data);
+    
+    // সিলেবাস টেবিল আপডেট
+    updateSyllabusTable(data);
+}
+
+// সবগুলো দেখুন বাটন আপডেট
+function updateShowAllButton(totalExams) {
+    const showAllBtn = document.getElementById('showAllBtn');
+    const showAllContainer = document.getElementById('showAllContainer');
+    
+    if (totalExams <= 2) {
+        showAllContainer.style.display = 'none';
+        return;
+    }
+    
+    showAllContainer.style.display = 'block';
+    
+    if (showingAllExams) {
+        showAllBtn.innerHTML = '<i class="fas fa-chevron-up"></i> কম দেখুন';
+        showAllBtn.classList.add('hide-btn');
+    } else {
+        showAllBtn.innerHTML = '<i class="fas fa-chevron-down"></i> সবগুলো দেখুন (' + (totalExams - 2) + 'টি আরও)';
+        showAllBtn.classList.remove('hide-btn');
+    }
+}
+
+// সবগুলো দেখুন টগল
+function toggleAllExams() {
+    showingAllExams = !showingAllExams;
+    renderExams(currentExams);
+}
+
+// ফিল্টার ফাংশন
+function filterExams(type) {
+    currentFilter = type;
+    showingAllExams = false;
+    
+    // বাটন স্টাইল আপডেট
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // ফিল্টার প্রয়োগ
+    switch(type) {
+        case 'all':
+            currentExams = [...exams];
+            break;
+        case 'major':
+            currentExams = exams.filter(exam => exam.type === 'major');
+            break;
+        case 'nonmajor':
+            currentExams = exams.filter(exam => exam.type === 'nonmajor');
+            break;
+    }
+    
+    renderExams(currentExams);
+}
+
+// মেনু টগল
+function toggleMenu() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    
+    sidebar.classList.toggle('active');
+    overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+}
+
+// সেকশনে স্ক্রল করার ফাংশন
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+// সার্চ ফাংশন
+document.getElementById('searchInput').addEventListener('input', (e) => {
+    const val = e.target.value.toLowerCase();
+    const filtered = exams.filter(ex => 
+        ex.subject.toLowerCase().includes(val) || 
+        ex.code.includes(val) ||
+        ex.date.toLowerCase().includes(val)
+    );
+    currentExams = filtered;
+    showingAllExams = false;
+    renderExams(currentExams);
+});
+
+// সিলেবাস টগল ফাংশন
+function toggleSyllabus(button) {
+    const content = button.nextElementSibling;
+    const icon = button.querySelector('.fa-chevron-down');
+    content.classList.toggle('show');
+    
+    if(content.classList.contains('show')) {
+        icon.className = 'fas fa-chevron-up';
+        button.style.border = '2px solid var(--primary)';
+        button.style.background = 'rgba(0,137,123,0.05)';
+    } else {
+        icon.className = 'fas fa-chevron-down';
+        button.style.border = '2px dashed var(--primary)';
+        button.style.background = 'none';
+    }
+}
+
+// রুটিন ডাউনলোড
+function downloadRoutineImage() {
+    const btn = document.querySelector('.dl-btn');
+    const oldText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> তৈরি হচ্ছে...';
+    btn.disabled = true;
+    
+    const element = document.getElementById('hidden-routine-table');
+    
+    html2canvas(element, { 
+        scale: 2, 
+        backgroundColor: "#ffffff",
+        useCORS: true,
+        logging: false,
+        onclone: function(clonedDoc) {
+            clonedDoc.getElementById('hidden-routine-table').style.position = 'relative';
+            clonedDoc.getElementById('hidden-routine-table').style.top = '0';
+            clonedDoc.getElementById('hidden-routine-table').style.left = '0';
+        }
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'Auroras25_পরীক্ষার_রুটিন.jpg';
+        link.href = canvas.toDataURL('image/jpeg', 0.9);
+        link.click();
+        
+        btn.innerHTML = oldText;
+        btn.disabled = false;
+    }).catch(err => {
+        console.error('Error generating image:', err);
+        alert('রুটিন ইমেজ তৈরি করতে সমস্যা হয়েছে। অনুগ্রহপূর্বক আবার চেষ্টা করুন।');
+        btn.innerHTML = oldText;
+        btn.disabled = false;
+    });
+}
+
+// সিলেবাস ডাউনলোড
+function downloadSyllabusImage() {
+    const btn = document.querySelector('.dl-syllabus');
+    const oldText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> তৈরি হচ্ছে...';
+    btn.disabled = true;
+    
+    const element = document.getElementById('hidden-syllabus-table');
+    
+    html2canvas(element, { 
+        scale: 2, 
+        backgroundColor: "#ffffff",
+        useCORS: true,
+        logging: false,
+        onclone: function(clonedDoc) {
+            clonedDoc.getElementById('hidden-syllabus-table').style.position = 'relative';
+            clonedDoc.getElementById('hidden-syllabus-table').style.top = '0';
+            clonedDoc.getElementById('hidden-syllabus-table').style.left = '0';
+        }
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'Auroras25_পরীক্ষার_সিলেবাস.jpg';
+        link.href = canvas.toDataURL('image/jpeg', 0.9);
+        link.click();
+        
+        btn.innerHTML = oldText;
+        btn.disabled = false;
+    }).catch(err => {
+        console.error('Error generating syllabus image:', err);
+        alert('সিলেবাস ইমেজ তৈরি করতে সমস্যা হয়েছে। অনুগ্রহপূর্বক আবার চেষ্টা করুন।');
+        btn.innerHTML = oldText;
+        btn.disabled = false;
+    });
+}
+
+// ইমেজ ডাউনলোড ফাংশন
 function downloadImage(url, filename) {
     const btn = document.getElementById('modalDlLink');
     const originalText = btn.innerHTML;
     
-    // লোডিং দেখানো
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রসেসিং হচ্ছে...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ডাউনলোড হচ্ছে...';
     btn.style.pointerEvents = 'none';
-
-    const img = new Image();
-    // এটি ক্রস-অরিজিন ইস্যু সমাধান করবে
-    img.crossOrigin = "Anonymous";
     
-    // ক্যাশ সমস্যা এড়াতে URL এর শেষে রেন্ডম টাইমস্ট্যাম্প যোগ করা হলো
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
     img.src = url + "?t=" + new Date().getTime();
-
+    
     img.onload = function() {
-        // ভার্চুয়াল ক্যানভাস তৈরি
         const canvas = document.createElement("canvas");
         canvas.width = img.width;
         canvas.height = img.height;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
-
-        // ইমেজকে ডাটা URL এ কনভার্ট করা
+        
         try {
             const dataURL = canvas.toDataURL("image/png");
-            
-            // ফেক লিংক তৈরি করে ক্লিক করা
             const a = document.createElement("a");
             a.href = dataURL;
             a.download = filename || "download.png";
@@ -1302,102 +3021,95 @@ function downloadImage(url, filename) {
             document.body.removeChild(a);
         } catch (err) {
             console.error("CORS Error:", err);
-            alert("সিকিউরিটি জনিত কারণে ডাউনলোড হচ্ছে না। ইমেজটি নতুন ট্যাবে ওপেন হচ্ছে, দয়া করে সেখান থেকে সেভ করুন।");
+            alert("সিকিউরিটি জনিত কারণে ডাউনলোড হচ্ছে না। ইমেজটি নতুন ট্যাবে ওপেন হচ্ছে, দয়া করে সেখান থেকে সেভ করুন।");
             window.open(url, '_blank');
         } finally {
-            // বাটন রিসেট
             btn.innerHTML = originalText;
             btn.style.pointerEvents = 'auto';
         }
     };
-
+    
     img.onerror = function() {
-        alert("ইমেজ লোড করতে সমস্যা হয়েছে।");
+        alert("ইমেজ লোড করতে সমস্যা হয়েছে।");
         btn.innerHTML = originalText;
         btn.style.pointerEvents = 'auto';
     };
 }
 
-// --- মোডাল ওপেন ফাংশন ---
+// মোডাল ফাংশন
 function openModal(src, name) {
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImg');
     const dlBtn = document.getElementById('modalDlLink');
-
+    
     modal.classList.add('active');
     modalImg.src = src;
-
-    // আগের ইভেন্ট মুছে নতুন ইভেন্ট যোগ করা
-    // (পুরানো href সরিয়ে দেওয়া হচ্ছে)
-    dlBtn.removeAttribute('href');
+    
     dlBtn.onclick = function() {
-        downloadImage(src, name);
+        downloadImage(src, name || "image.png");
     };
 }
 
-// --- মোডাল ক্লোজ ফাংশন ---
 function closeModal() {
     document.getElementById('imageModal').classList.remove('active');
+    document.getElementById('developerModal').classList.remove('active');
 }
-        // স্ক্রল বাটন লজিক
-        window.onscroll = function() {
-            const btn = document.getElementById('scrollTopBtn');
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-                btn.style.display = "flex";
-            } else {
-                btn.style.display = "none";
-            }
-        };
 
-        // --- ইনিশিয়ালাইজ ---
-        renderExams(exams);
+function openDeveloperInfo() {
+    document.getElementById('developerModal').classList.add('active');
+}
 
-    </script>
+// থিম টগল
+function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+    const icon = document.querySelector('.fa-moon');
+    if(document.body.classList.contains('dark-mode')) {
+        icon.className = 'fas fa-sun';
+        icon.parentElement.title = "লাইট মোড";
+    } else {
+        icon.className = 'fas fa-moon';
+        icon.parentElement.title = "ডার্ক মোড";
+    }
+}
+
+// স্ক্রল বাটন
+window.onscroll = function() {
+    const btn = document.getElementById('scrollTopBtn');
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        btn.style.display = "flex";
+    } else {
+        btn.style.display = "none";
+    }
+};
+
+// ইনিশিয়ালাইজেশন
+function init() {
+    // পরবর্তী পরীক্ষা নির্ধারণ
+    nextExam = findNextExam();
     
-    <!-- JavaScript -->
-<script>
-// Get modal element
-const sharifulinfoModal = document.getElementById('sharifulinfoModal');
-
-// Function to open modal
-function openSharifulinfoModal() {
-  sharifulinfoModal.style.display = 'block';
-  document.body.style.overflow = 'hidden';
+    if(nextExam) {
+        updateNextExamDisplay();
+        
+        // কাউন্টডাউন আপডেট শুরু
+        updateCountdown();
+        countdownInterval = setInterval(updateCountdown, 1000);
+    } else {
+        document.getElementById('countdownBanner').style.display = 'none';
+    }
+    
+    // টিকার আপডেট শুরু
+    updateMarquee();
+    marqueeInterval = setInterval(updateMarquee, 5000);
+    
+    // এক্সাম রেন্ডার
+    renderExams(exams);
+    
+    // সিলেবাস টেবিল আপডেট
+    updateSyllabusTable(exams);
 }
 
-// Function to close modal
-function closeSharifulinfoModal() {
-  sharifulinfoModal.style.display = 'none';
-  document.body.style.overflow = 'auto';
-}
-
-// Close modal when clicking on X
-document.querySelector('.sharifulinfo-close').addEventListener('click', closeSharifulinfoModal);
-
-// Close modal when clicking outside of it
-window.addEventListener('click', function(event) {
-  if (event.target === sharifulinfoModal) {
-    closeSharifulinfoModal();
-  }
-});
-
-// Close modal with Escape key
-document.addEventListener('keydown', function(event) {
-  if (event.key === 'Escape') {
-    closeSharifulinfoModal();
-  }
-});
-
-// Update your footer link to use this function
-document.addEventListener('DOMContentLoaded', function() {
-  const designerLink = document.querySelector('.designer-link');
-  if (designerLink) {
-    designerLink.addEventListener('click', function(e) {
-      e.preventDefault();
-      openSharifulinfoModal();
-    });
-  }
-});
+// ডকুমেন্ট লোড হলে ইনিশিয়ালাইজ করুন
+document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
