@@ -1603,6 +1603,7 @@ footer {
     }
 }
 </style>
+
 </head>
 <body>
 
@@ -1660,12 +1661,26 @@ footer {
         <a href="javascript:void(0);" onclick="toggleMenu(); scrollToSection('gallery')">
             <i class="fas fa-images"></i> ডাউনলোড জোন
         </a>
+        <!-- বিদ্যমান মেনু আইটেমগুলোর পরে এই কোডগুলো যোগ করুন -->
+<a href="https://msharifulvisionary.github.io/college-dashboard/public/notes/" target="_blank" onclick="toggleMenu();">
+    <i class="fas fa-sticky-note"></i> গুরুত্বপূর্ণ নোট
+</a>
+<a href="https://msharifulvisionary.github.io/college-dashboard/public/notices/" target="_blank" onclick="toggleMenu();">
+    <i class="fas fa-file-alt"></i> সকল নোটিশ
+</a>
+<a href="https://msharifulvisionary.github.io/physics.ahc.gov.bd/" target="_blank" onclick="toggleMenu();">
+    <i class="fas fa-globe"></i> মূল ওয়েবসাইট
+</a>
         <a href="https://www.facebook.com/share/1MWjp3pfHL/" target="_blank" onclick="toggleMenu();">
             <i class="fab fa-facebook"></i> ফেসবুক পেজ
         </a>
         <a href="https://m.me/j/Aba0w-Wy7tinFqyp/" target="_blank" onclick="toggleMenu();">
             <i class="fab fa-facebook-messenger"></i> মেসেঞ্জার গ্রুপ
         </a>
+        <!-- সাইডবার মেনুর মধ্যে এই লিংক যোগ করুন -->
+<a href="javascript:void(0);" onclick="openQuestionPapersModal(); toggleMenu();">
+    <i class="fas fa-file-pdf"></i> প্রশ্নপত্র
+</a>
         <a href="javascript:void(0);" onclick="openDeveloperInfo(); toggleMenu();">
             <i class="fas fa-code"></i> ডেভেলপার তথ্য
         </a>
@@ -1883,6 +1898,8 @@ footer {
 <button id="scrollTopBtn" onclick="window.scrollTo({top:0, behavior:'smooth'})">
     <i class="fas fa-arrow-up"></i>
 </button>
+
+
 
 <!-- ফুটার -->
 <footer>
@@ -3165,5 +3182,8 @@ updateSyllabusTable(data);
 // ডকুমেন্ট লোড হলে ইনিশিয়ালাইজ করুন
 document.addEventListener('DOMContentLoaded', init);
 </script>
+
+
+
 </body>
 </html>
